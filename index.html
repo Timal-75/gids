@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Guide</title>
+<style>
+:root{
+  --paper:#F2F6F4; --surface:#FFFFFF; --ink:#14213D; --muted:#55607A; --rule:#CFD8DC;
+  --route:#3D4EDB; --sun:#FFD23F;
+  --ok:#12784F; --warn:#9A5B00; --bad:#B8263C; --info:#3D4EDB;
+  --ok-bg:#DDF3E8; --warn-bg:#FFEFCC; --bad-bg:#FBE1E5; --info-bg:#E6E9FC;
+  --display:"Bahnschrift","DIN Alternate","Avenir Next Condensed","Roboto Condensed","Arial Narrow",sans-serif;
+  --body:"Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Roboto,"Noto Sans",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:4.5rem}
+body{margin:0;background:var(--paper);color:var(--ink);font:1.0625rem/1.6 var(--body);-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.12;margin:0;font-weight:700;letter-spacing:-.005em}
+p{margin:.6em 0}
+a{color:var(--route)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--route);outline-offset:2px}
+.law{font-size:.875rem;color:var(--muted)}
+.nl{font-style:italic}
+
+/* barre du haut : repère + langue */
+#bar{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;display:flex;align-items:center;gap:.75rem;padding:.5rem .9rem}
+#bar strong{font-family:var(--display);font-size:1.05rem;white-space:nowrap}
+#nav{display:flex;gap:.25rem;overflow-x:auto;flex:1;scrollbar-width:none}
+#nav::-webkit-scrollbar{display:none}
+#nav a{color:#fff;text-decoration:none;white-space:nowrap;padding:.3rem .65rem;border-radius:99px;font-size:.9rem;opacity:.75}
+#nav a.here{background:var(--sun);color:var(--ink);opacity:1;font-weight:600}
+#lang{display:flex;border:2px solid #fff;border-radius:6px;overflow:hidden;flex:none}
+#lang button{background:none;border:0;color:#fff;padding:.2rem .6rem;cursor:pointer;font-weight:600}
+#lang button[aria-pressed=true]{background:#fff;color:var(--ink)}
+
+/* tête de page */
+header.hero{padding:2.2rem 1.1rem 1.4rem;max-width:46rem;margin:0 auto}
+header.hero h1{font-size:clamp(2.1rem,8vw,3.6rem);letter-spacing:-.02em}
+header.hero .sub{font-size:1.15rem;max-width:34rem;margin-top:.8rem}
+.notes{display:grid;gap:.5rem;margin-top:1.2rem;font-size:.95rem}
+.notes p{margin:0;padding:.55rem .8rem;background:var(--surface);border-left:6px solid var(--sun)}
+
+/* la ligne : chaque section est une station */
+main{max-width:46rem;margin:0 auto;padding:0 1.1rem 4rem}
+main>section{position:relative;border-left:4px solid var(--route);padding:0 0 2.6rem 1.4rem;margin-left:.6rem}
+main>section:last-child{border-left-color:transparent}
+main>section>h2{font-size:clamp(1.6rem,5.5vw,2.2rem);padding-top:.1rem}
+main>section>h2::before{content:"";position:absolute;left:-.8rem;top:.15rem;width:1.2rem;height:1.2rem;border-radius:50%;background:var(--paper);border:4px solid var(--route)}
+.lead{font-size:1.1rem;max-width:36rem}
+h3{font-size:1.3rem;margin-top:1.4rem}
+h4{font-size:1.08rem;margin-top:1rem}
+
+/* parcours : questions = arrêts */
+.stops{list-style:none;margin:1.2rem 0 0;padding:0}
+.stop{position:relative;padding:0 0 1.5rem 1.9rem;border-left:3px dashed var(--rule);margin-left:.5rem}
+.stop.done{border-left:3px solid var(--ink)}
+.stop::before{content:"";position:absolute;left:-.62rem;top:.2rem;width:1.05rem;height:1.05rem;border-radius:50%;background:var(--ink)}
+.stop.here::before{background:var(--sun);box-shadow:0 0 0 3px var(--ink)}
+.stop h3{margin-top:0;font-size:1.25rem}
+.help{color:var(--muted);font-size:.95rem;margin:.3rem 0 0}
+.opts{display:grid;gap:.5rem;margin-top:.7rem}
+.opts button{text-align:left;background:var(--surface);border:2px solid var(--ink);border-radius:6px;padding:.65rem .85rem;cursor:pointer;line-height:1.35}
+.opts button:hover{background:var(--info-bg)}
+.opts button[aria-pressed=true]{background:var(--ink);color:#fff}
+.opts button small{display:block;opacity:.75;font-size:.85rem;margin-top:.15rem}
+.remaining{color:var(--muted);margin-left:2.4rem}
+.linkbtn{background:none;border:0;padding:0;color:var(--route);text-decoration:underline;cursor:pointer}
+
+/* blocs de résultat */
+.verdict{border:3px solid var(--ink);background:var(--surface);margin-top:.5rem}
+.verdict>header{padding:1rem 1.1rem;border-bottom:3px solid var(--ink)}
+.verdict>header h3{margin:0;font-size:1.55rem}
+.verdict>header p{margin:.4rem 0 0}
+.verdict>div{padding:.2rem 1.1rem 1rem}
+.lv-ok>header,.tag.ok{background:var(--ok-bg)} .lv-warn>header,.tag.warn{background:var(--warn-bg)}
+.lv-bad>header,.tag.bad{background:var(--bad-bg)} .lv-info>header,.tag.info{background:var(--info-bg)}
+.blk{border-left:6px solid var(--rule);padding:.1rem 0 .1rem .9rem;margin-top:1.1rem}
+.blk.ok{border-color:var(--ok)} .blk.warn{border-color:#E8A317} .blk.bad{border-color:var(--bad)} .blk.info{border-color:var(--route)}
+.blk h4{margin-top:0}
+.blk ul,.body ul{padding-left:1.2rem;margin:.4rem 0}
+.blk li,.body li{margin:.25rem 0}
+.body ul.traps{list-style:none;padding:0;margin-top:1rem}
+.traps li{background:var(--surface);border-left:6px solid var(--bad);padding:.6rem .9rem;margin:.6rem 0}
+.tag{display:inline-block;padding:.05rem .5rem;border-radius:4px;font-size:.82rem;font-weight:600}
+.tag.ok{color:var(--ok)} .tag.warn{color:var(--warn)} .tag.bad{color:var(--bad)} .tag.info{color:var(--info)}
+
+/* carte complète : arbre dépliable */
+.tree details{margin:.35rem 0 .35rem .2rem;border-left:3px solid var(--rule);padding-left:.8rem}
+.tree details[open]{border-left-color:var(--route)}
+.tree summary{cursor:pointer;font-weight:600;padding:.25rem 0}
+.tree .leaf{margin:.35rem 0 .35rem .2rem;padding:.5rem .8rem;border-left:6px solid var(--rule);background:var(--surface)}
+.tree .leaf.ok{border-color:var(--ok)} .tree .leaf.warn{border-color:#E8A317} .tree .leaf.bad{border-color:var(--bad)}
+.tree .leaf p{margin:.2rem 0}
+
+/* points de contrôle */
+.cp{background:var(--surface);border:2px solid var(--rule);border-radius:6px;padding:.8rem .95rem;margin-top:.7rem}
+.cp[data-s=no]{border-color:var(--bad)} .cp[data-s=ok]{border-color:var(--ok)} .cp[data-s=unk]{border-color:#E8A317}
+.cp h4{margin:0}
+.tri{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.tri button{border:2px solid var(--ink);background:var(--surface);border-radius:99px;padding:.2rem .8rem;cursor:pointer;font-size:.92rem}
+.tri button[aria-pressed=true]{background:var(--ink);color:#fff}
+.conseq{margin-top:.6rem;padding:.5rem .7rem;background:var(--bad-bg)}
+.summary{border:3px solid var(--ink);background:var(--surface);padding:.8rem 1rem;margin-top:1rem}
+
+/* preuves */
+.ev label{display:flex;gap:.6rem;align-items:flex-start;padding:.45rem 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.ev input{width:1.25rem;height:1.25rem;margin-top:.2rem;accent-color:var(--ink);flex:none}
+.ev small{display:block;color:var(--muted)}
+progress{width:100%;height:.8rem;accent-color:var(--ok)}
+
+/* à faire / à éviter */
+.dodont{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr))}
+.dodont>div{background:var(--surface);padding:.7rem .95rem;border-top:6px solid var(--ok)}
+.dodont>div.dont{border-top-color:var(--bad)}
+.dodont h4{margin-top:0}
+
+/* étapes et délais */
+.steps{list-style:none;counter-reset:s;padding:0;margin:1rem 0}
+.steps li{counter-increment:s;position:relative;padding:0 0 1rem 2.6rem}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:1.9rem;height:1.9rem;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--display);font-weight:700;display:grid;place-items:center}
+.steps b{font-family:var(--display);font-size:1.1rem}
+.calc{background:var(--surface);border:3px solid var(--ink);padding:.9rem 1rem;margin-top:1rem}
+.calc input{border:2px solid var(--ink);border-radius:6px;padding:.35rem .5rem;background:#fff}
+.calc output{display:block;margin-top:.6rem;font-family:var(--display);font-size:1.35rem}
+
+/* lettres, lexique, aide */
+details.fold{background:var(--surface);border:2px solid var(--rule);border-radius:6px;margin-top:.7rem}
+details.fold>summary{cursor:pointer;padding:.7rem .95rem;font-weight:600}
+details.fold>div{padding:0 .95rem .9rem}
+pre{white-space:pre-wrap;font:0.92rem/1.5 var(--body);background:var(--paper);border:1px dashed var(--muted);padding:.8rem;margin:.6rem 0}
+.btn{border:2px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:.35rem .9rem;cursor:pointer}
+.search{width:100%;border:2px solid var(--ink);border-radius:6px;padding:.5rem .7rem;background:#fff;margin-top:.6rem}
+dl.gl{margin:.8rem 0 0}
+dl.gl dt{font-family:var(--display);font-weight:700;font-size:1.08rem;margin-top:.7rem}
+dl.gl dd{margin:0}
+.help-list{display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));margin-top:1rem}
+.help-list>div{background:var(--surface);padding:.7rem .95rem;border-left:6px solid var(--sun)}
+.help-list h4{margin-top:0}
+.src li{font-size:.92rem;word-break:break-word}
+footer{max-width:46rem;margin:0 auto;padding:0 1.1rem 3rem;color:var(--muted);font-size:.9rem}
+
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  #bar,.btn,.tri,.linkbtn,.search{display:none}
+  body{background:#fff;font-size:10.5pt}
+  main>section{break-inside:auto;border-left:0;margin-left:0;padding-left:0}
+  main>section>h2::before{display:none}
+  .cp,.qz,.blk,.card,details.fold{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div id="bar"><strong id="brand"></strong><nav id="nav" aria-label="Sections"></nav><div id="lang"><button type="button" data-act="lang" data-k="fr">FR</button><button type="button" data-act="lang" data-k="nl">NL</button></div></div>
+<p id="nojs" style="max-width:34rem;margin:2rem auto;padding:1rem 1.2rem;background:#fff;border-left:6px solid #FFD23F;font-size:1.15rem">Zie je alleen deze tekst? Dan toont dit programma de gids niet. Open het bestand met een webbrowser: Chrome, Safari, Edge of Firefox.<br><br>Tu ne vois que ce texte ? Ouvre le fichier avec un navigateur : Chrome, Safari, Edge ou Firefox.</p>
+<header class="hero" id="hero"></header>
+<main></main>
+<footer id="foot"></footer>
+
+<script>
+const T=(fr,nl)=>({fr,nl});
+/*DATA:ui*/
+const UI={
+  brand:T('Le guide','De gids'),
+  title:T('Enquête sur ton adresse : trouve ton chemin','Onderzoek naar je woonadres: vind je weg'),
+  sub:T('La commune ou l’UWV pense que tu habites chez ta mère. Ce guide t’explique ce qu’ils cherchent, ce que dit vraiment la loi, et quoi faire à chaque étape.','De gemeente of het UWV denkt dat je bij je moeder woont. Deze gids legt uit wat ze zoeken, wat de wet echt zegt, en wat je bij elke stap kunt doen.'),
+  n1:T('Ce fichier marche sans internet. Tes réponses restent sur ton écran : rien n’est enregistré, rien n’est envoyé.','Dit bestand werkt zonder internet. Je antwoorden blijven op je scherm: er wordt niets opgeslagen en niets verstuurd.'),
+  n2:T('Ce guide explique le droit. Il ne remplace pas un avocat : il te prépare à lui parler. L’aide juridique de départ est gratuite (voir « Où trouver de l’aide »).','Deze gids legt het recht uit. Hij vervangt geen advocaat: hij bereidt je voor op het gesprek met een advocaat. Eerste juridische hulp is gratis (zie ‘Waar vind je hulp’).'),
+  n3:T('Tout repose sur les faits vrais. Une preuve arrangée ou une fausse déclaration transforme un dossier rattrapable en fraude intentionnelle.','Alles draait om de echte feiten. Gefabriceerd bewijs of een valse verklaring maakt van een herstelbare zaak opzettelijke fraude.'),
+  remaining:T('Réponds à la question ci-dessus pour continuer.','Beantwoord de vraag hierboven om verder te gaan.'),
+  reset:T('Recommencer','Opnieuw beginnen'),
+  yes:T('Oui','Ja'), no:T('Non','Nee'), unk:T('Je ne sais pas','Weet ik niet'),
+  cpOk:T('Oui','Ja'), cpNo:T('Non','Nee'), cpUnk:T('Je ne sais pas','Weet ik niet'),
+  cpIfNo:T('Si ce n’est pas le cas','Als dit niet zo is'),
+  cpSum:T('À soulever avec l’avocat','Bespreek dit met je advocaat'),
+  cpNone:T('Coche les points ci-dessus : ceux qui ne sont pas respectés, ou que tu ne connais pas, s’afficheront ici.','Vink de punten hierboven aan: wat niet is nageleefd of wat je niet weet, komt hier te staan.'),
+  cpAsk:T('À vérifier dans le dossier','Nakijken in het dossier'),
+  flip:T('Touche pour retourner','Tik om om te draaien'),
+  evDone:T('rassemblées','verzameld'),
+  true:T('Vrai','Waar'), false:T('Faux','Niet waar'),
+  right:T('Bien vu.','Goed gezien.'), wrong:T('Pas tout à fait.','Niet helemaal.'),
+  score:T('Score','Score'),
+  copy:T('Copier la lettre','Brief kopiëren'), copied:T('Copié','Gekopieerd'),
+  search:T('Chercher un mot…','Zoek een woord…'),
+  calcQ:T('Date écrite sur la décision','Datum op het besluit'),
+  calcA:T('Dernier jour pour envoyer l’objection (bezwaar) :','Laatste dag om bezwaar te maken:'),
+  calcNote:T('Six semaines à partir du lendemain de l’envoi. Si le dernier jour tombe un samedi, un dimanche ou un jour férié légal, il est reporté au jour ouvrable suivant ; c’est déjà pris en compte ici. Le calcul part de la date d’envoi, qui peut être plus tardive que la date écrite : garde l’enveloppe. N’attends pas le dernier jour.','Zes weken vanaf de dag na verzending. Valt de laatste dag op een zaterdag, zondag of algemeen erkende feestdag, dan schuift hij op naar de volgende werkdag; daar is hier al rekening mee gehouden. De termijn loopt vanaf de verzenddatum, die later kan zijn dan de datum op de brief: bewaar de envelop. Wacht niet tot de laatste dag.'),
+  foot:T('Droit néerlandais tel que vérifié en novembre 2026. Les montants et les lois changent : fais confirmer chaque point par un avocat ou le Juridisch Loket avant d’agir.','Nederlands recht zoals nagekeken in november 2026. Bedragen en wetten veranderen: laat elk punt bevestigen door een advocaat of het Juridisch Loket voordat je iets doet.')
+};
+/*END:ui*/
+
+/*DATA:tree*/
+const QUESTIONS=[
+ {id:'benefit',q:T(`Quelle aide touche ta mère ?`,`Welke uitkering krijgt je moeder?`),
+  help:T(`C’est écrit en haut de ses lettres : « gemeente » ou « UWV ».`,`Het staat bovenaan haar brieven: ‘gemeente’ of ‘UWV’.`),
+  options:[
+   {v:'pw',label:T(`L’aide sociale de la commune (bijstand)`,`Bijstand van de gemeente`),note:T(`Mêmes règles pour IOAW, IOAZ, AIO et Anw`,`Dezelfde regels gelden voor IOAW, IOAZ, AIO en Anw`)},
+   {v:'tw',label:T(`Une allocation de l’UWV avec un complément (Toeslagenwet)`,`Een UWV-uitkering met een toeslag (Toeslagenwet)`),note:T(`WIA, WAO, Wajong… complétée jusqu’au minimum social`,`WIA, WAO, Wajong… aangevuld tot het sociaal minimum`)},
+   {v:'uwv',label:T(`Une allocation de l’UWV sans complément`,`Een UWV-uitkering zonder toeslag`)},
+   {v:'none',label:T(`Aucune de ces aides`,`Geen van deze uitkeringen`),note:T(`Seulement un salaire, une pension, ou seulement des allocations (loyer, santé)`,`Alleen loon, pensioen, of alleen toeslagen (huur, zorg)`)},
+   {v:'unk',label:T(`Je ne sais pas`,`Weet ik niet`)}]},
+ {id:'rent',q:T(`Ta mère reçoit-elle l’aide au loyer (huurtoeslag) ?`,`Krijgt je moeder huurtoeslag?`),
+  options:[{v:'yes',label:T(`Oui`,`Ja`)},{v:'no',label:T(`Non`,`Nee`)},{v:'unk',label:T(`Je ne sais pas`,`Weet ik niet`)}]},
+ {id:'who',q:T(`Qui mène l’enquête ?`,`Wie doet het onderzoek?`),help:T(`Regarde l’en-tête de la lettre.`,`Kijk naar het briefhoofd.`),
+  options:[
+   {v:'gem',label:T(`La commune, service des aides`,`De gemeente, afdeling uitkeringen`),note:T(`Werk en Inkomen, Handhaving, Sociale recherche`,`Werk en Inkomen, Handhaving, Sociale recherche`)},
+   {v:'brp',label:T(`La commune, service de l’état civil`,`De gemeente, afdeling Burgerzaken`),note:T(`Un contrôle d’adresse (adresonderzoek)`,`Een adresonderzoek`)},
+   {v:'uwv',label:T(`L’UWV`,`Het UWV`)},
+   {v:'toe',label:T(`Le service des allocations (Dienst Toeslagen)`,`Dienst Toeslagen`)},
+   {v:'unk',label:T(`Je ne sais pas`,`Weet ik niet`)}]},
+ {id:'age',q:T(`Quel âge avais-tu pendant la période que l’enquête examine ?`,`Hoe oud was je in de periode die wordt onderzocht?`),
+  help:T(`Depuis le 1er janvier 2023, seul un adulte de 27 ans ou plus peut faire baisser l’aide. Avant 2023, le seuil était 21 ans.`,`Sinds 1 januari 2023 kan alleen een volwassene van 27 jaar of ouder de uitkering verlagen. Vóór 2023 lag de grens bij 21 jaar.`),
+  options:[
+   {v:'u27',label:T(`Moins de 27 ans pendant toute la période`,`De hele periode jonger dan 27`)},
+   {v:'turn27',label:T(`J’ai eu 27 ans pendant la période`,`Ik ben in die periode 27 geworden`)},
+   {v:'o27',label:T(`27 ans ou plus pendant toute la période`,`De hele periode 27 of ouder`)}]},
+ {id:'student',show:a=>a.age&&a.age!=='u27',q:T(`Étais-tu en études pendant cette période ?`,`Volgde je in die periode een opleiding?`),
+  help:T(`Compte : une formation qui donne droit au financement d’études (studiefinanciering, WTOS) ou une formation en alternance BBL.`,`Het gaat om onderwijs dat recht kan geven op studiefinanciering of WTOS, of een bbl-opleiding.`),
+  options:[{v:'yes',label:T(`Oui`,`Ja`)},{v:'no',label:T(`Non`,`Nee`)}]},
+ {id:'reality',q:T(`Dans la réalité, où as-tu dormi pendant cette période ?`,`Waar sliep je in die periode echt?`),
+  help:T(`Toi seule le sais. Réponds pour toi, pas pour l’enquêteur : personne ne voit ce que tu choisis ici.`,`Alleen jij weet dit. Antwoord voor jezelf, niet voor de onderzoeker: niemand ziet wat je hier kiest.`),
+  options:[
+   {v:'nowhere',label:T(`Nulle part de fixe`,`Nergens vast`),note:T(`Je tourne entre plusieurs endroits, et de temps en temps chez ma mère`,`Ik wissel tussen meerdere plekken, en af en toe bij mijn moeder`)},
+   {v:'partner',label:T(`Surtout chez mon copain ou ma copine`,`Vooral bij mijn vriend of vriendin`)},
+   {v:'elsewhere',label:T(`Surtout chez une autre personne`,`Vooral bij iemand anders`),note:T(`Mon frère, une amie, de la famille…`,`Mijn broer, een vriendin, familie…`)},
+   {v:'own',label:T(`Dans un logement à moi`,`In een eigen woonruimte`),note:T(`Chambre, colocation, studio, même sans contrat`,`Kamer, gedeelde woning, studio, ook zonder contract`)},
+   {v:'half',label:T(`À peu près la moitié du temps chez ma mère`,`Ongeveer de helft van de tijd bij mijn moeder`)},
+   {v:'changed',label:T(`Ça a changé selon les mois`,`Het wisselde per maand`),note:T(`Certains mois chez ma mère, d’autres ailleurs`,`Sommige maanden bij mijn moeder, andere elders`)},
+   {v:'mother',label:T(`Surtout chez ma mère`,`Vooral bij mijn moeder`)}]},
+ {id:'things',q:T(`Qu’est-ce que tu gardes chez ta mère ?`,`Wat bewaar je bij je moeder?`),
+  options:[
+   {v:'little',label:T(`Presque rien, ou quelques affaires`,`Bijna niets, of een paar spullen`)},
+   {v:'most',label:T(`La plupart de mes vêtements`,`De meeste van mijn kleren`)},
+   {v:'all',label:T(`Presque tout : vêtements, papiers, courrier, médicaments`,`Bijna alles: kleren, papieren, post, medicijnen`)},
+   {v:'unk',label:T(`Je ne sais pas`,`Weet ik niet`)}]},
+ {id:'proof',q:T(`As-tu des traces de tes nuits ailleurs ?`,`Heb je sporen van je nachten elders?`),
+  options:[
+   {v:'strong',label:T(`Oui, plusieurs`,`Ja, meerdere`),note:T(`Messages, paiements, trajets, des personnes qui confirment`,`Berichten, betalingen, reisgegevens, mensen die het bevestigen`)},
+   {v:'some',label:T(`Un peu`,`Een beetje`)},
+   {v:'none',label:T(`Presque rien`,`Bijna niets`)},
+   {v:'unk',label:T(`Je ne sais pas encore`,`Weet ik nog niet`)}]},
+ {id:'said',q:T(`Qu’est-ce qui a déjà été dit aux enquêteurs ?`,`Wat is er al tegen de onderzoekers gezegd?`),
+  options:[
+   {v:'nothing',label:T(`Rien encore`,`Nog niets`)},
+   {v:'true',label:T(`La vérité, autant que je sache`,`De waarheid, voor zover ik weet`)},
+   {v:'wrong',label:T(`Des choses inexactes ou incomplètes`,`Dingen die niet kloppen of onvolledig zijn`)},
+   {v:'unk',label:T(`Je ne sais pas ce que ma mère a dit`,`Ik weet niet wat mijn moeder heeft gezegd`)}]},
+ {id:'brp',q:T(`Où es-tu inscrite à la commune (BRP) ?`,`Waar sta je ingeschreven bij de gemeente (BRP)?`),
+  options:[
+   {v:'real',label:T(`À l’adresse où je dors vraiment le plus souvent`,`Op het adres waar ik echt het vaakst slaap`)},
+   {v:'other',label:T(`À une adresse où je ne dors pas vraiment, ou plus`,`Op een adres waar ik niet echt (meer) slaap`)},
+   {v:'mother',label:T(`À l’adresse de ma mère`,`Op het adres van mijn moeder`)},
+   {v:'brief',label:T(`J’ai une adresse postale (briefadres)`,`Ik heb een briefadres`)},
+   {v:'none',label:T(`Nulle part, ou je ne sais pas`,`Nergens, of ik weet het niet`)}]},
+ {id:'stage',q:T(`Où en est la procédure ?`,`Hoe ver is de procedure?`),
+  options:[
+   {v:'none',label:T(`Rien d’officiel encore`,`Nog niets officieels`),note:T(`On a seulement entendu parler d’un contrôle`,`We hebben alleen gehoord dat er een controle komt`)},
+   {v:'start',label:T(`Une lettre annonce un contrôle ou demande des papiers`,`Een brief kondigt een onderzoek aan of vraagt om stukken`)},
+   {v:'talk',label:T(`Un entretien est prévu`,`Er is een gesprek gepland`)},
+   {v:'visit',label:T(`Une visite à domicile est annoncée`,`Er is een huisbezoek aangekondigd`)},
+   {v:'after',label:T(`L’entretien ou la visite a déjà eu lieu`,`Het gesprek of het huisbezoek is al geweest`)},
+   {v:'stopped',label:T(`L’aide est suspendue ou bloquée`,`De uitkering is opgeschort of geblokkeerd`)},
+   {v:'decision',label:T(`Une décision est arrivée : retrait, remboursement ou amende`,`Er is een besluit: intrekking, terugvordering of boete`)},
+   {v:'unk',label:T(`Je ne sais pas`,`Weet ik niet`)}]}
+];
+const norm=a=>a.benefit!=='uwv'&&a.benefit!=='none';              // une règle de partage des frais peut jouer
+const counts=a=>norm(a)&&a.age!=='u27'&&a.student!=='yes';        // la fille peut compter comme co-habitante
+const away=a=>['partner','elsewhere','own'].includes(a.reality);   // centre de vie à une autre adresse
+const mixed=a=>a.reality==='half'||a.reality==='changed';
+const HEADS=[
+ {when:a=>a.benefit==='none',level:'info',
+  title:T(`Sans aide liée au foyer, c’est surtout ton inscription qui est en jeu`,`Zonder uitkering die van het huishouden afhangt, gaat het vooral om je inschrijving`),
+  text:T(`Si ta mère ne touche ni aide sociale ni complément de l’UWV, ta présence ne peut pas lui faire perdre cet argent-là. Restent l’aide au loyer, si elle la touche, et ton inscription à la commune.`,`Krijgt je moeder geen bijstand en geen toeslag van het UWV, dan kan jouw aanwezigheid haar dat geld niet kosten. Wat overblijft: de huurtoeslag, als ze die krijgt, en jouw inschrijving bij de gemeente.`)},
+ {when:a=>!norm(a)&&a.rent==='no',level:'ok',
+  title:T(`Ta présence ne change en principe rien à l’allocation de ta mère`,`Jouw aanwezigheid verandert in principe niets aan de uitkering van je moeder`),
+  text:T(`Une allocation UWV de base (WIA, WAO, Wajong) ne dépend pas de qui habite là. Faites confirmer par écrit à l’UWV quelle allocation elle touche exactement, et s’il y a un complément.`,`Een gewone UWV-uitkering (WIA, WAO, Wajong) hangt niet af van wie er in huis woont. Laat het UWV schriftelijk bevestigen welke uitkering ze precies krijgt, en of er een toeslag bij zit.`)},
+ {when:a=>!norm(a),level:'info',
+  title:T(`Seule l’aide au loyer peut être en jeu`,`Alleen de huurtoeslag kan meespelen`),
+  text:T(`L’allocation UWV de base ne dépend pas de qui habite là. L’aide au loyer, elle, regarde qui est inscrit à l’adresse.`,`De gewone UWV-uitkering hangt niet af van wie er woont. De huurtoeslag kijkt wél naar wie op het adres staat ingeschreven.`)},
+ {when:a=>a.age==='u27',level:'ok',
+  title:T(`Avant 27 ans, tu ne comptes pas comme co-habitante`,`Onder de 27 tel je niet mee als kostendeler`),
+  text:T(`Même si tu avais habité chez ta mère, son aide n’aurait pas dû baisser pour cette raison. L’enquête perd son enjeu principal.`,`Zelfs als je bij je moeder had gewoond, had haar uitkering daardoor niet omlaag gemoeten. Het onderzoek verliest zijn belangrijkste inzet.`)},
+ {when:a=>a.student==='yes',level:'ok',
+  title:T(`En études, tu ne comptes pas comme co-habitante`,`Als student tel je niet mee als kostendeler`),
+  text:T(`La loi exclut de la règle de partage des frais les étudiants qui peuvent prétendre au financement d’études, et les élèves en BBL.`,`De wet sluit studenten die recht kunnen hebben op studiefinanciering, en bbl-leerlingen, uit van de kostendelersnorm.`)},
+ {when:a=>away(a),level:'ok',
+  title:T(`Ta résidence principale est ailleurs : l’aide de ta mère n’est pas touchée`,`Je hoofdverblijf is ergens anders: de uitkering van je moeder wordt niet geraakt`),
+  text:T(`Si le centre de ta vie est à une autre adresse, tu n’es pas co-habitante de ta mère. Il reste à le montrer, et à mettre ton inscription en accord avec ta vie réelle.`,`Als het middelpunt van je leven op een ander adres ligt, ben je geen kostendeler van je moeder. Je moet het wel kunnen laten zien, en je inschrijving moet kloppen met je echte leven.`)},
+ {when:a=>a.reality==='nowhere',level:'warn',
+  title:T(`Défendable : tout se joue sur les faits et les preuves`,`Verdedigbaar: alles draait om de feiten en het bewijs`),
+  text:T(`Ta mère ne perd de l’aide que si ta résidence principale est chez elle, et c’est à l’administration de le prouver. Tes nuits chez elle et tes vêtements dans son armoire sont ses meilleurs arguments : prépare les tiens.`,`Je moeder verliest alleen geld als jouw hoofdverblijf bij haar is, en dat moet de overheid bewijzen. Je nachten bij haar en je kleren in haar kast zijn hun sterkste argumenten: bereid de jouwe voor.`)},
+ {when:a=>mixed(a),level:'warn',
+  title:T(`Zone grise : ça peut basculer d’un côté ou de l’autre`,`Grijs gebied: het kan beide kanten op vallen`),
+  text:T(`Il n’existe pas de nombre de nuits fixé par la loi. Les juges regardent l’ensemble : où tu dors, où sont tes affaires, où tu as un autre vrai point de chute.`,`De wet noemt geen vast aantal nachten. Rechters kijken naar het geheel: waar je slaapt, waar je spullen zijn, en of je een andere echte plek hebt.`)},
+ {when:a=>a.reality==='mother',level:'bad',
+  title:T(`Si tu habitais surtout chez ta mère, son aide aurait dû être plus basse`,`Als je vooral bij je moeder woonde, had haar uitkering lager moeten zijn`),
+  text:T(`Ce n’est pas la fin. L’objectif devient de limiter les dégâts, et il y a de vraies marges : le montant, l’amende, les délais, la proportionnalité.`,`Dit is niet het einde. Het doel wordt nu de schade beperken, en daar is echt ruimte voor: het bedrag, de boete, de termijnen, de evenredigheid.`)}
+];
+const BLOCKS=[
+ {when:a=>norm(a)&&a.age==='u27',level:'ok',title:T(`Pourquoi l’âge change tout`,`Waarom leeftijd alles verandert`),body:T(
+  `<p>Seul un adulte de <b>27 ans ou plus</b> peut être « co-habitant qui partage les frais » (<span class="nl">kostendelende medebewoner</span>). La même limite vaut pour le complément de l’UWV.</p>
+   <ul><li>Écrivez à l’administration que tu avais moins de 27 ans sur toute la période, et demandez sur quelle base légale l’enquête continue (lettre type n° 5).</li>
+   <li>Avant le 1er janvier 2023, le seuil était 21 ans. Si l’enquête remonte avant 2023 et que tu avais déjà 21 ans, cette ancienne période reste discutée.</li>
+   <li>Sans argent versé en trop, il n’y a rien à rembourser, et le risque d’amende est faible.</li></ul>
+   <p class="law">Art. 19a Participatiewet ; art. 2 lid 9 Toeslagenwet.</p>`,
+  `<p>Alleen een volwassene van <b>27 jaar of ouder</b> kan ‘kostendelende medebewoner’ zijn. Dezelfde grens geldt voor de toeslag van het UWV.</p>
+   <ul><li>Schrijf de instantie dat je de hele periode jonger dan 27 was, en vraag op welke wettelijke grond het onderzoek doorgaat (voorbeeldbrief 5).</li>
+   <li>Vóór 1 januari 2023 lag de grens bij 21 jaar. Loopt het onderzoek terug tot vóór 2023 en was je toen al 21, dan blijft die oude periode ter discussie staan.</li>
+   <li>Is er niets te veel betaald, dan valt er niets terug te betalen en is het risico op een boete klein.</li></ul>
+   <p class="law">Art. 19a Participatiewet; art. 2 lid 9 Toeslagenwet.</p>`)},
+ {when:a=>norm(a)&&a.age!=='u27'&&a.student==='yes',level:'ok',title:T(`L’exception pour les études`,`De uitzondering voor studenten`),body:T(
+  `<p>Ne compte pas comme co-habitant la personne qui suit une formation pouvant donner droit à la <span class="nl">studiefinanciering</span> ou à la WTOS, ou une formation professionnelle en alternance (BBL).</p>
+   <ul><li>Rassemble la preuve d’inscription et les dates exactes de la formation.</li><li>L’exception ne vaut que pour les mois où tu étais réellement inscrite.</li></ul>
+   <p class="law">Art. 19a lid 1 d Participatiewet.</p>`,
+  `<p>Wie onderwijs volgt dat recht kan geven op studiefinanciering of WTOS, of een bbl-opleiding volgt, telt niet mee als kostendeler.</p>
+   <ul><li>Verzamel het bewijs van inschrijving en de precieze data van de opleiding.</li><li>De uitzondering geldt alleen voor de maanden waarin je echt stond ingeschreven.</li></ul>
+   <p class="law">Art. 19a lid 1 d Participatiewet.</p>`)},
+ {when:a=>counts(a)&&a.reality==='nowhere',level:'info',title:T(`Ce que l’administration doit prouver`,`Wat de overheid moet bewijzen`),body:T(
+  `<p>La résidence principale (<span class="nl">hoofdverblijf</span>) est l’endroit où se trouve le centre de ta vie. Elle se juge sur les faits, pas sur ton inscription. Pour réduire une aide déjà accordée, la preuve est à la charge de l’administration. Et une personne peut n’avoir de résidence principale nulle part.</p>
+   <ul><li><b>Pour toi :</b> dans les affaires gagnées, la personne dormait là 2 à 4 nuits par semaine sans que sa vie y soit centrée, et il y avait des traces concrètes de sa présence ailleurs.</li>
+   <li><b>Contre toi :</b> les juges regardent où sont rangés les vêtements et les affaires. Quelqu’un qui est « hébergé » sans aucun autre logement et qui est là presque tous les jours a déjà été jugé résident.</li>
+   <li><b>Ta réponse honnête :</b> quand on n’a pas de chez-soi, on laisse ses affaires chez sa mère. Ça dit où est l’armoire, pas où tu dors. Mais il faut des preuves de tes nuits ailleurs (voir « Tes preuves »).</li>
+   <li><b>Séjour de crise :</b> si tu as logé chez ta mère pendant une période difficile, les lignes directrices disent de ne pas appliquer la baisse pour un séjour temporaire. Au-delà de six mois, on présume que c’est ta résidence.</li></ul>
+   <p class="law">CRvB : ECLI:NL:CRVB:2021:3038, 2021:2832, 2019:4122, 2022:2735 (favorables) ; 2019:4213, 2018:317 (défavorables).</p>`,
+  `<p>Je hoofdverblijf is de plek waar het zwaartepunt van je persoonlijk leven ligt. Het wordt beoordeeld op de feiten, niet op je inschrijving. Om een lopende uitkering te verlagen, ligt de bewijslast bij de overheid. En iemand kan ook nergens een hoofdverblijf hebben.</p>
+   <ul><li><b>Vóór jou:</b> in gewonnen zaken sliep de persoon er 2 tot 4 nachten per week zonder dat zijn leven daar lag, en waren er concrete sporen van verblijf elders.</li>
+   <li><b>Tegen jou:</b> rechters kijken waar kleding en spullen liggen. Iemand die ‘logeert’ zonder enige andere woonplek en er bijna dagelijks is, is al eens als bewoner aangemerkt.</li>
+   <li><b>Je eerlijke antwoord:</b> wie geen eigen plek heeft, laat zijn spullen bij zijn moeder. Dat zegt waar de kast staat, niet waar je slaapt. Maar je hebt bewijs nodig van je nachten elders (zie ‘Jouw bewijs’).</li>
+   <li><b>Crisisverblijf:</b> logeerde je in een moeilijke periode bij je moeder, dan zeggen de richtlijnen dat de norm bij tijdelijk verblijf niet wordt toegepast. Na zes maanden wordt aangenomen dat het je hoofdverblijf is.</li></ul>
+   <p class="law">CRvB: ECLI:NL:CRVB:2021:3038, 2021:2832, 2019:4122, 2022:2735 (gunstig); 2019:4213, 2018:317 (ongunstig).</p>`)},
+ {when:a=>counts(a)&&away(a),level:'info',title:T(`Si tu vis surtout chez quelqu’un d’autre`,`Als je vooral bij iemand anders woont`),body:T(
+  `<p>Pour ta mère, c’est la situation la plus favorable : ta résidence principale est ailleurs. Trois choses à savoir avant d’en parler.</p>
+   <ul><li><b>Dire où tu dors protège ta mère.</b> Ne pas vouloir le dire a un prix : devant les juges, celui qui refuse d’indiquer où il passe ses nuits en supporte le risque.</li>
+   <li><b>Ce que tu déclares entre dans le dossier de ta mère.</b> Elle et son avocat peuvent le lire. Si tu ne veux pas que ton entourage apprenne chez qui tu vis, parle d’abord seule à un avocat : il est tenu au secret et peut chercher comment établir les faits sans exposer plus que nécessaire.</li>
+   <li><b>La personne chez qui tu vis doit vérifier sa propre situation.</b> Si elle touche une aide ou une allocation logement, ta présence peut compter pour elle, surtout si vous formez un couple.</li>
+   <li><b>Ton inscription doit suivre :</b> la loi veut que tu sois inscrite là où tu dors le plus souvent.</li></ul>`,
+  `<p>Voor je moeder is dit de gunstigste situatie: je hoofdverblijf is ergens anders. Drie dingen om te weten voordat je erover praat.</p>
+   <ul><li><b>Zeggen waar je slaapt beschermt je moeder.</b> Het niet willen zeggen heeft een prijs: bij de rechter draagt degene die niet wil vertellen waar hij overnacht het risico.</li>
+   <li><b>Wat jij verklaart, komt in het dossier van je moeder.</b> Zij en haar advocaat kunnen het lezen. Wil je niet dat je omgeving weet bij wie je woont, praat dan eerst alleen met een advocaat: die heeft een geheimhoudingsplicht en kan zoeken naar een manier om de feiten vast te stellen zonder meer prijs te geven dan nodig.</li>
+   <li><b>Degene bij wie je woont, moet zijn eigen situatie nakijken.</b> Krijgt die persoon een uitkering of toeslag, dan kan jouw aanwezigheid meetellen, zeker als jullie een stel zijn.</li>
+   <li><b>Je inschrijving moet volgen:</b> de wet wil dat je staat ingeschreven waar je het vaakst slaapt.</li></ul>`)},
+ {when:a=>counts(a)&&mixed(a),level:'warn',title:T(`Ce qui fait pencher la balance`,`Wat de doorslag geeft`),body:T(
+  `<ul><li><b>Vers « pas résidente » :</b> 2 à 4 nuits par semaine au plus, un autre vrai point de chute, des affaires réparties à plusieurs endroits, du courrier ailleurs, des hôtes qui confirment par écrit des faits précis.</li>
+   <li><b>Vers « résidente » :</b> présence presque quotidienne, toutes tes affaires au même endroit, aucun autre lieu identifiable, une situation qui dure depuis plus de six mois.</li>
+   <li><b>Fais le compte honnête, mois par mois.</b> Si certains mois tu étais surtout chez ta mère, seuls ces mois-là sont en jeu. Les autres se défendent.</li></ul>
+   <p class="law">CRvB : ECLI:NL:CRVB:2018:3809, 2023:495 (favorables) ; 2020:2926, 2021:1217, 2023:200 (défavorables).</p>`,
+  `<ul><li><b>Richting ‘geen bewoner’:</b> hooguit 2 tot 4 nachten per week, een andere echte plek, spullen verspreid over meerdere adressen, post ergens anders, gastheren die concrete feiten op papier bevestigen.</li>
+   <li><b>Richting ‘bewoner’:</b> bijna dagelijks aanwezig, al je spullen op één plek, geen andere aanwijsbare plek, een situatie die langer dan zes maanden duurt.</li>
+   <li><b>Maak eerlijk de rekening op, maand voor maand.</b> Was je sommige maanden vooral bij je moeder, dan gaat het alleen om die maanden. De rest is te verdedigen.</li></ul>
+   <p class="law">CRvB: ECLI:NL:CRVB:2018:3809, 2023:495 (gunstig); 2020:2926, 2021:1217, 2023:200 (ongunstig).</p>`)},
+ {when:a=>counts(a)&&a.reality==='mother',level:'bad',title:T(`Ce que ça coûte vraiment, et ce qui le limite`,`Wat het echt kost, en wat het begrenst`),body:T(
+  `<ul><li><b>Le montant.</b> L’aide est recalculée, pas supprimée. En principe on réclame la différence entre la norme pour une personne seule et la norme de partage : 405,56 € par mois aux taux de juillet 2026 pour un foyer de deux. Exigez un calcul mois par mois.</li>
+   <li><b>L’amende.</b> Elle va de 25 % à 100 % du montant selon le degré de faute, puis elle est réduite selon vos moyens. La maladie de ta mère est un motif légal de réduction.</li>
+   <li><b>Le pénal.</b> Le dossier ne part en principe au parquet qu’au-delà de 50 000 € bruts, ou en cas de circonstances aggravantes.</li>
+   <li><b>Les marges.</b> Raisons impérieuses et proportionnalité, lenteur de l’administration après un signalement, montant net plutôt que brut, plan de paiement.</li>
+   <li><b>Les mots comptent.</b> Vous avez le droit de vous taire sur ce qui peut mener à une amende. Ce qui est dit fixe son niveau : voyez un avocat avant toute déclaration. Ne mentez pas pour autant : un mensonge découvert coûte plus cher que la vérité.</li>
+   <li><b>Arrêtez le compteur.</b> Tant que la situation réelle n’est pas déclarée, la dette grossit. Mettez les papiers en accord avec la réalité, dans un sens ou dans l’autre.</li></ul>
+   <p class="law">Art. 54, 58 et 18a Participatiewet ; ECLI:NL:CRVB:2025:768, 2024:2192, 2026:1000.</p>`,
+  `<ul><li><b>Het bedrag.</b> De uitkering wordt herzien, niet ingetrokken. In principe wordt het verschil teruggevraagd tussen de norm voor een alleenstaande en de kostendelersnorm: € 405,56 per maand naar de bedragen van juli 2026 bij een huishouden van twee. Eis een berekening per maand.</li>
+   <li><b>De boete.</b> Die is 25% tot 100% van het bedrag, afhankelijk van de verwijtbaarheid, en wordt daarna verlaagd naar draagkracht. De ziekte van je moeder is een wettelijke grond voor matiging.</li>
+   <li><b>Strafrecht.</b> Een zaak gaat in principe pas naar het Openbaar Ministerie boven € 50.000 bruto, of bij verzwarende omstandigheden.</li>
+   <li><b>De ruimte.</b> Dringende redenen en evenredigheid, traagheid van de gemeente na een melding, netto in plaats van bruto, een betalingsregeling.</li>
+   <li><b>Woorden tellen.</b> Jullie mogen zwijgen over wat tot een boete kan leiden. Wat er gezegd wordt, bepaalt de hoogte: spreek eerst een advocaat. Lieg ook niet: een ontdekte leugen kost meer dan de waarheid.</li>
+   <li><b>Zet de teller stil.</b> Zolang de echte situatie niet is gemeld, groeit de schuld. Zorg dat de papieren kloppen met de werkelijkheid, de ene of de andere kant op.</li></ul>
+   <p class="law">Art. 54, 58 en 18a Participatiewet; ECLI:NL:CRVB:2025:768, 2024:2192, 2026:1000.</p>`)},
+ {when:a=>counts(a)&&(a.reality==='mother'||mixed(a)),level:'info',title:T(`Le calendrier joue : nouvelle loi attendue le 1er janvier 2027`,`De kalender telt: nieuwe wet verwacht op 1 januari 2027`),body:T(
+  `<p>Une loi déjà publiée (<span class="nl">Wet handhaving sociale zekerheid</span>) adoucit les sanctions : avertissement possible à la place de l’amende, amende plafonnée plus bas, remboursement limité aux cinq dernières années sauf fraude grave. Son entrée en vigueur est annoncée pour le 1er janvier 2027 mais n’était pas encore fixée officiellement en novembre 2026.</p>
+   <p>Les décisions prises avant cette date restent sous l’ancienne loi. Pour l’amende, la règle la plus douce s’applique si la loi change entre-temps. Demandez à l’avocat ce que cela change pour vous.</p>
+   <p class="law">Staatsblad 2026, 372 ; art. 5:46 lid 4 Awb.</p>`,
+  `<p>Een al gepubliceerde wet (Wet handhaving sociale zekerheid) verzacht de sancties: een waarschuwing in plaats van een boete wordt mogelijk, de boete krijgt een lager maximum, en terugvordering wordt beperkt tot de laatste vijf jaar, behalve bij ernstige fraude. De inwerkingtreding is aangekondigd voor 1 januari 2027, maar was in november 2026 nog niet officieel vastgesteld.</p>
+   <p>Besluiten van vóór die datum blijven onder de oude wet vallen. Voor de boete geldt de mildste regel als de wet tussentijds verandert. Vraag de advocaat wat dit voor jullie betekent.</p>
+   <p class="law">Staatsblad 2026, 372; art. 5:46 lid 4 Awb.</p>`)},
+ {when:a=>a.rent!=='no',level:'info',title:T(`L’aide au loyer suit l’inscription`,`Huurtoeslag volgt de inschrijving`),body:T(
+  `<ul><li>Pour l’aide au loyer, compte comme co-habitant celui qui est <b>inscrit</b> à la même adresse. Tant que tu es inscrite ailleurs, tu n’es pas comptée.</li>
+   <li>Si la commune corrige ton inscription vers l’adresse de ta mère, le service des allocations peut recalculer jusqu’à cinq ans en arrière. Tes revenus compteraient alors (avant 23 ans, seulement la part au-dessus de 6 218 € par an en 2026).</li>
+   <li>L’aide pour l’assurance santé de ta mère (<span class="nl">zorgtoeslag</span>) n’est pas concernée : un enfant n’est jamais le « partenaire » de son parent.</li></ul>
+   <p class="law">Art. 2 et 3 lid 5 Awir ; ECLI:NL:RVS:2024:720.</p>`,
+  `<ul><li>Voor de huurtoeslag telt als medebewoner wie op hetzelfde adres staat <b>ingeschreven</b>. Zolang je ergens anders staat ingeschreven, tel je niet mee.</li>
+   <li>Past de gemeente je inschrijving aan naar het adres van je moeder, dan kan Dienst Toeslagen tot vijf jaar terug herberekenen. Je inkomen telt dan mee (onder de 23 alleen het deel boven € 6.218 per jaar in 2026).</li>
+   <li>De zorgtoeslag van je moeder wordt niet geraakt: een kind is nooit de toeslagpartner van zijn ouder.</li></ul>
+   <p class="law">Art. 2 en 3 lid 5 Awir; ECLI:NL:RVS:2024:720.</p>`)},
+ {when:a=>a.brp==='other',level:'warn',title:T(`Ton inscription ne correspond pas à ta vie réelle`,`Je inschrijving klopt niet met je echte leven`),body:T(
+  `<p>La loi veut que tu sois inscrite là où tu dors le plus souvent. Si aucune adresse ne remplit ce critère, tu n’as pas d’adresse de résidence et il te faut une adresse postale (<span class="nl">briefadres</span>).</p>
+   <ul><li><b>Le risque :</b> une amende de 325 € au plus, pour toi et pour l’occupant qui laisse sciemment une fausse inscription chez lui ; une enquête d’adresse ; et surtout une crédibilité abîmée dans le dossier de ta mère.</li>
+   <li><b>La sortie :</b> déclare la situation réelle maintenant. Une déclaration tardive est acceptée.</li>
+   <li>Sans domicile fixe : demande une adresse postale (lettre type n° 3). Chez une seule autre personne : inscris-toi là. Surtout chez ta mère : inscris-toi chez elle, et elle le signale à l’organisme qui la paie.</li></ul>
+   <p class="law">Art. 1.1, 2.39 et 4.17 Wet BRP.</p>`,
+  `<p>De wet wil dat je staat ingeschreven waar je het vaakst slaapt. Voldoet geen enkel adres daaraan, dan heb je geen woonadres en heb je een briefadres nodig.</p>
+   <ul><li><b>Het risico:</b> een boete van hoogstens € 325, voor jou en voor de bewoner die bewust een onjuiste inschrijving op zijn adres laat staan; een adresonderzoek; en vooral schade aan je geloofwaardigheid in het dossier van je moeder.</li>
+   <li><b>De uitweg:</b> geef de echte situatie nu door. Een late aangifte wordt geaccepteerd.</li>
+   <li>Geen vaste plek: vraag een briefadres aan (voorbeeldbrief 3). Bij één ander persoon: schrijf je daar in. Vooral bij je moeder: schrijf je bij haar in, en zij meldt het bij de instantie die haar betaalt.</li></ul>
+   <p class="law">Art. 1.1, 2.39 en 4.17 Wet BRP.</p>`)},
+ {when:a=>a.brp==='brief',level:'ok',title:T(`L’adresse postale est la solution prévue par la loi`,`Een briefadres is de oplossing die de wet biedt`),body:T(
+  `<ul><li>Une adresse postale ne fait pas de toi une co-habitante : pour l’aide sociale, seule compte ta résidence réelle ; pour l’aide au loyer, seule compte une inscription comme résidente.</li>
+   <li>Elle ne protège pas si, dans les faits, tu habites chez la personne qui te prête son adresse.</li>
+   <li>Si ton adresse postale est chez ta mère, c’est légal, mais cela nourrit le soupçon. Une adresse chez ton frère ou à la commune évite la confusion.</li></ul>
+   <p class="law">Art. 2.23 et 2.42 Wet BRP.</p>`,
+  `<ul><li>Een briefadres maakt je geen medebewoner: voor de bijstand telt alleen waar je echt verblijft; voor de huurtoeslag telt alleen een inschrijving als bewoner.</li>
+   <li>Het beschermt niet als je in feite woont bij degene die je zijn adres leent.</li>
+   <li>Is je briefadres bij je moeder, dan mag dat, maar het voedt de verdenking. Een briefadres bij je broer of bij de gemeente voorkomt verwarring.</li></ul>
+   <p class="law">Art. 2.23 en 2.42 Wet BRP.</p>`)},
+ {when:a=>a.brp==='none',level:'warn',title:T(`Sans inscription, beaucoup de droits se bloquent`,`Zonder inschrijving loop je veel rechten mis`),body:T(
+  `<p>Aides, courrier officiel, démarches : presque tout passe par ton inscription. Si tu séjournes dans une commune sans adresse de résidence, cette commune doit t’inscrire à une adresse postale, au besoin à une adresse de la mairie. Demande-le par écrit (lettre type n° 3) et garde une copie datée.</p>
+   <p class="law">Art. 2.23 leden 2 et 3 Wet BRP, en vigueur depuis le 1er janvier 2022.</p>`,
+  `<p>Uitkeringen, officiële post, aanvragen: bijna alles loopt via je inschrijving. Verblijf je in een gemeente zonder woonadres, dan moet die gemeente je op een briefadres inschrijven, desnoods op een adres van de gemeente zelf. Vraag het schriftelijk aan (voorbeeldbrief 3) en bewaar een gedateerde kopie.</p>
+   <p class="law">Art. 2.23 leden 2 en 3 Wet BRP, in werking sinds 1 januari 2022.</p>`)},
+ {when:a=>a.brp==='real',level:'ok',title:T(`Ton inscription correspond à ta vie réelle`,`Je inschrijving klopt met je echte leven`),body:T(
+  `<p>C’est un point solide : garde un extrait récent du registre (<span class="nl">uittreksel BRP</span>) avec l’historique de tes adresses, et joins-le à votre dossier.</p>`,
+  `<p>Dat is een sterk punt: vraag een recent uittreksel BRP met je adreshistorie op en voeg het bij jullie dossier.</p>`)},
+ {when:a=>counts(a)&&a.reality!=='mother',level:'info',title:T(`Comment t’expliquer, sans rien arranger`,`Hoe je het uitlegt, zonder iets mooier te maken`),body:T(
+  `<ul><li>Dis où tu dors, chez qui et depuis quand. « Pas chez ma mère » ne suffit pas : il faut dire où.</li>
+   <li>Donne des ordres de grandeur vrais : « une à deux nuits par semaine chez ma mère », pas « jamais » si ce n’est pas jamais.</li>
+   <li>Parle toi-même de tes affaires chez elle, avant qu’on te pose la question.</li>
+   <li>Appuie chaque phrase par une trace datée ou une personne qui peut le confirmer.</li>
+   <li>Ce que tu ne sais pas ou plus, dis que tu ne le sais pas.</li></ul>`,
+  `<ul><li>Zeg waar je slaapt, bij wie en sinds wanneer. ‘Niet bij mijn moeder’ is niet genoeg: je moet zeggen waar wel.</li>
+   <li>Geef eerlijke schattingen: ‘één à twee nachten per week bij mijn moeder’, niet ‘nooit’ als het niet nooit is.</li>
+   <li>Begin zelf over je spullen bij haar, voordat ernaar wordt gevraagd.</li>
+   <li>Onderbouw elke zin met een gedateerd spoor of iemand die het kan bevestigen.</li>
+   <li>Wat je niet (meer) weet: zeg dat je het niet weet.</li></ul>`)},
+ {when:a=>norm(a)&&a.age==='turn27',level:'info',title:T(`Seule la période après tes 27 ans compte`,`Alleen de periode na je 27e telt`),body:T(
+  `<p>Avant ton anniversaire, tu ne pouvais pas compter comme co-habitante. Faites limiter toute réclamation à la période qui suit, et vérifiez la date de départ du calcul.</p>`,
+  `<p>Vóór je verjaardag kon je niet als kostendeler meetellen. Laat elke terugvordering beperken tot de periode daarna, en controleer de begindatum van de berekening.</p>`)},
+ {when:a=>counts(a)&&a.reality!=='mother'&&a.things==='all',level:'bad',title:T(`Tes affaires pèsent lourd contre toi`,`Je spullen wegen zwaar tegen je`),body:T(
+  `<p>Vêtements, papiers, courrier et médicaments au même endroit : c’est ce que les juges appellent le centre de la vie. Avec cela, dire « je n’habite pas là » ne suffira pas sans preuves solides de ta vie ailleurs. Si en vrai ta vie est là, change de branche plutôt que d’argument : choisis « Surtout chez ma mère » plus haut et regarde ce résultat-là.</p>`,
+  `<p>Kleren, papieren, post en medicijnen op één plek: dat noemen rechters het zwaartepunt van je leven. Dan is ‘ik woon daar niet’ niet genoeg zonder stevig bewijs van je leven elders. Ligt je leven daar in werkelijkheid wel, kies dan een andere vertakking in plaats van een ander argument: kies hierboven ‘Vooral bij mijn moeder’ en bekijk dat resultaat.</p>`)},
+ {when:a=>counts(a)&&a.reality!=='mother'&&a.things==='most',level:'warn',title:T(`Ta garde-robe chez ta mère : à expliquer toi-même`,`Je kleren bij je moeder: leg het zelf uit`),body:T(
+  `<p>Les juges regardent où sont les vêtements. Dis-le avant qu’on le découvre, explique pourquoi, et montre ce que tu gardes ailleurs : un sac, des affaires de toilette chez les personnes qui t’hébergent.</p>`,
+  `<p>Rechters kijken waar de kleding ligt. Zeg het voordat het wordt ontdekt, leg uit waarom, en laat zien wat je elders bewaart: een tas, toiletspullen bij de mensen waar je slaapt.</p>`)},
+ {when:a=>counts(a)&&a.reality!=='mother'&&a.proof==='none',level:'bad',title:T(`Sans traces, ta parole seule risque de ne pas suffire`,`Zonder sporen is je woord alleen waarschijnlijk niet genoeg`),body:T(
+  `<p>L’administration doit prouver. Mais si elle a des constatations (affaires, voisins, observations) et que tu n’as rien à leur opposer, les juges la suivent souvent. Cherche vraiment : relevés bancaires, trajets, téléphone, messages. Et regarde d’abord honnêtement ce que ces traces montrent. Si elles montrent surtout le quartier de ta mère, ce ne sont pas les preuves qu’il faut changer, c’est la branche.</p>`,
+  `<p>De overheid moet het bewijzen. Maar heeft ze bevindingen (spullen, buren, waarnemingen) en kun jij daar niets tegenover zetten, dan volgt de rechter haar vaak. Zoek echt: bankafschriften, reisgegevens, telefoon, berichten. En kijk eerst eerlijk wat die sporen laten zien. Wijzen ze vooral naar de buurt van je moeder, dan moet je niet het bewijs veranderen maar de vertakking.</p>`)},
+ {when:a=>counts(a)&&a.reality!=='mother'&&a.proof==='strong',level:'ok',title:T(`Tes traces sont ta meilleure défense : relis-les avant de les remettre`,`Je sporen zijn je beste verdediging: bekijk ze voordat je ze inlevert`),body:T(
+  `<p>Vérifie qu’elles racontent bien ce que tu dis, mois par mois. Une pièce qui te contredit, remise par toi-même, fait plus de dégâts que pas de pièce. Montre-les d’abord à l’avocat.</p>`,
+  `<p>Controleer of ze echt vertellen wat jij zegt, maand voor maand. Een stuk dat je tegenspreekt en dat je zelf inlevert, doet meer schade dan geen stuk. Laat ze eerst aan de advocaat zien.</p>`)},
+ {when:a=>a.said==='wrong',level:'bad',title:T(`Une chose inexacte a déjà été dite : c’est le point le plus urgent`,`Er is al iets onjuists gezegd: dit is het dringendste punt`),body:T(
+  `<p>Les juges tiennent la première déclaration pour vraie. Revenir dessus est difficile ; la laisser et en ajouter d’autres est pire. Voyez un avocat avant tout nouvel entretien : il décidera comment rectifier par écrit, avant la décision. N’essayez pas de la rattraper par des attestations de proches : elles ne pèsent rien contre une première déclaration.</p>
+   <p class="law">ECLI:NL:CRVB:2021:498, 2021:1892.</p>`,
+  `<p>Rechters gaan uit van de eerste verklaring. Erop terugkomen is moeilijk; haar laten staan en er nieuwe verklaringen op stapelen is erger. Spreek een advocaat vóór elk nieuw gesprek: die bepaalt hoe het schriftelijk wordt rechtgezet, vóór het besluit. Probeer het niet te herstellen met verklaringen van familie: die wegen niet op tegen een eerste verklaring.</p>
+   <p class="law">ECLI:NL:CRVB:2021:498, 2021:1892.</p>`)},
+ {when:a=>a.said==='unk',level:'warn',title:T(`Sache ce qui a été dit avant de parler`,`Weet wat er is gezegd voordat je praat`),body:T(
+  `<p>Demandez la copie des comptes rendus. Le but n’est pas d’accorder vos versions : vous pouvez être entendues séparément et tout sera comparé. Le but est que chacune dise ce qu’elle sait elle-même, et « je ne sais pas » pour le reste.</p>`,
+  `<p>Vraag een kopie van de gespreksverslagen. Het doel is niet om jullie verhalen op elkaar af te stemmen: jullie kunnen apart worden gehoord en alles wordt vergeleken. Het doel is dat ieder zegt wat zij zelf weet, en ‘dat weet ik niet’ voor de rest.</p>`)},
+ {when:a=>a.who==='brp',level:'info',title:T(`Un contrôle d’adresse n’est pas encore une enquête sur l’aide`,`Een adresonderzoek is nog geen uitkeringsonderzoek`),body:T(
+  `<p>L’état civil vérifie seulement où tu habites. Mais son résultat est transmis : si ton adresse est corrigée vers celle de ta mère, l’aide sociale et l’aide au loyer suivront. Réponds précisément où tu dors ; celui qui ne le dit pas clairement en supporte le risque. La commune ne peut pas te radier à la légère : une radiation fondée sur deux visites et un voisin a été annulée.</p>
+   <p class="law">ECLI:NL:RVS:2022:152, 2025:2827.</p>`,
+  `<p>Burgerzaken controleert alleen waar je woont. Maar de uitkomst wordt doorgegeven: wordt je adres aangepast naar dat van je moeder, dan volgen de bijstand en de huurtoeslag. Zeg precies waar je slaapt; wie dat niet duidelijk zegt, draagt het risico. De gemeente mag je niet lichtvaardig uitschrijven: een uitschrijving op basis van twee bezoeken en een buur is vernietigd.</p>
+   <p class="law">ECLI:NL:RVS:2022:152, 2025:2827.</p>`)},
+ {when:a=>a.who==='toe',level:'info',title:T(`Avec le service des allocations, c’est l’inscription qui compte`,`Bij Dienst Toeslagen telt de inschrijving`),body:T(
+  `<p>Il peut recalculer jusqu’à cinq ans en arrière. Ta mère a le droit d’être entendue dès 1 500 € par an. Une dette se rembourse en principe sur 24 mois. Une amende suppose l’intention ou une faute grave.</p>
+   <p class="law">Art. 21, 26 et 41 Awir.</p>`,
+  `<p>De dienst kan tot vijf jaar terug herberekenen. Je moeder heeft het recht om te worden gehoord vanaf € 1.500 per jaar. Een schuld wordt in principe in 24 maanden terugbetaald. Een boete vereist opzet of grove schuld.</p>
+   <p class="law">Art. 21, 26 en 41 Awir.</p>`)},
+ {when:a=>a.who==='uwv',level:'info',title:T(`Avec l’UWV, les mêmes règles de fond`,`Bij het UWV gelden dezelfde hoofdregels`),body:T(
+  `<p>Même limite de 27 ans, même notion de résidence principale. L’UWV peut renoncer au recalcul lui-même pour raisons impérieuses, et répond à une objection dans les 13 semaines.</p>`,
+  `<p>Dezelfde grens van 27 jaar, hetzelfde begrip hoofdverblijf. Het UWV kan wegens dringende redenen ook van de herziening zelf afzien, en beslist binnen 13 weken op een bezwaar.</p>`)},
+ {when:a=>a.brp==='mother',level:'warn',title:T(`Inscrite chez ta mère, tu comptes pour l’aide au loyer`,`Sta je bij je moeder ingeschreven, dan tel je mee voor de huurtoeslag`),body:T(
+  `<p>Et c’est un indice sérieux que tu y habites. Si en vrai tu n’y dors pas le plus souvent, ton inscription est fausse dans l’autre sens : corrige-la vers ton adresse réelle, ou vers une adresse postale si tu n’en as pas.</p>`,
+  `<p>En het is een serieuze aanwijzing dat je er woont. Slaap je er in werkelijkheid niet het vaakst, dan klopt je inschrijving de andere kant op niet: pas haar aan naar je echte adres, of naar een briefadres als je er geen hebt.</p>`)},
+ {when:a=>a.stage==='unk',level:'info',title:T(`D’abord savoir où en est le dossier`,`Eerst weten hoe ver het dossier is`),body:T(
+  `<ul><li>Demande à ta mère toutes les lettres reçues, avec les enveloppes et les dates.</li>
+   <li>Cherche le mot clé de chaque lettre : <span class="nl">onderzoek</span> (enquête), <span class="nl">opschorting</span> (suspension), <span class="nl">besluit</span> (décision), <span class="nl">terugvordering</span> (remboursement), <span class="nl">boete</span> (amende).</li>
+   <li>Si une lettre parle de <span class="nl">bezwaar</span> et de six semaines, un délai court déjà : regarde « Étapes et délais ».</li>
+   <li>Avec les lettres en main, le Juridisch Loket vous dit en quelques minutes où vous en êtes.</li></ul>`,
+  `<ul><li>Vraag je moeder om alle brieven die ze heeft gekregen, met de enveloppen en de data.</li>
+   <li>Zoek in elke brief het sleutelwoord: onderzoek, opschorting, besluit, terugvordering, boete.</li>
+   <li>Staat er in een brief iets over bezwaar en zes weken, dan loopt er al een termijn: kijk bij ‘Stappen en termijnen’.</li>
+   <li>Met de brieven erbij vertelt het Juridisch Loket jullie in een paar minuten hoe ver het is.</li></ul>`)},
+ {when:a=>a.stage==='none',level:'ok',title:T(`Tant que rien n’est ouvert, une porte reste ouverte`,`Zolang er niets loopt, staat er nog een deur open`),body:T(
+  `<p>Corriger de soi-même une situation inexacte avant tout contrôle est le seul cas où la loi prévoit un simple avertissement (si c’est fait dans les 60 jours) ou une amende réduite à 25 %. Une fois le contrôle ouvert, cette porte se ferme en général. Si quelque chose n’est pas en ordre, inscription ou cohabitation non déclarée, c’est maintenant qu’il faut le régler, avec le Juridisch Loket.</p>
+   <p class="law">Boetebesluit socialezekerheidswetten, art. 2a et 2aa.</p>`,
+  `<p>Zelf een onjuiste situatie herstellen vóór elke controle is het enige geval waarin de wet een waarschuwing kent (als het binnen 60 dagen gebeurt) of een boete van 25%. Zodra het onderzoek loopt, gaat die deur meestal dicht. Klopt er iets niet, een inschrijving of een niet-gemelde medebewoner, regel het dan nu, samen met het Juridisch Loket.</p>
+   <p class="law">Boetebesluit socialezekerheidswetten, art. 2a en 2aa.</p>`)},
+ {when:a=>a.stage==='start',level:'info',title:T(`À faire cette semaine`,`Deze week doen`),body:T(
+  `<ul><li>Notez la date limite de la lettre et répondez à temps, par écrit, avec une copie. Ne pas répondre peut suffire à faire suspendre l’aide.</li>
+   <li>Demandez par écrit sur quoi porte l’enquête, sur quelle période, et sur quels éléments elle repose.</li>
+   <li>Appelez le Juridisch Loket et demandez un avocat avec aide juridique subventionnée, avant le premier entretien.</li>
+   <li>Commencez le dossier de preuves aujourd’hui : certaines traces s’effacent avec le temps.</li>
+   <li>Pas de réponses improvisées au téléphone. « Je préfère répondre par écrit » est une phrase permise.</li></ul>`,
+  `<ul><li>Noteer de uiterste datum uit de brief en reageer op tijd, schriftelijk, met een kopie. Niet reageren kan genoeg zijn om de uitkering op te schorten.</li>
+   <li>Vraag schriftelijk waar het onderzoek over gaat, over welke periode, en waarop het is gebaseerd.</li>
+   <li>Bel het Juridisch Loket en vraag om een advocaat met een toevoeging, vóór het eerste gesprek.</li>
+   <li>Begin vandaag met het bewijsdossier: sommige sporen verdwijnen na verloop van tijd.</li>
+   <li>Geen geïmproviseerde antwoorden aan de telefoon. ‘Ik reageer liever schriftelijk’ is een toegestane zin.</li></ul>`)},
+ {when:a=>a.stage==='talk',level:'info',title:T(`Avant l’entretien`,`Vóór het gesprek`),body:T(
+  `<ul><li>N’y allez pas seules : vous avez le droit d’être accompagnées par un avocat ou une personne de confiance. Si l’avocat n’est pas disponible, demandez par écrit un report.</li>
+   <li>Demandez au début : « Est-ce un entretien qui peut mener à une amende ? » Si oui, on doit vous dire que vous n’êtes pas obligées de répondre et que vous pouvez consulter un avocat.</li>
+   <li>Répondez seulement à ce que vous savez. « Je ne sais plus » et « je dois vérifier » sont des réponses valables. Ne devinez pas des dates.</li>
+   <li>Relisez le compte rendu ligne par ligne. Faites corriger ce qui est inexact. Ne signez pas un texte faux ou que vous ne comprenez pas, et demandez une copie.</li>
+   <li>La première déclaration vous suit pendant toute la procédure : c’est pour cela qu’elle se prépare.</li></ul>
+   <p class="law">Art. 2:1 et 5:10a Awb ; ECLI:NL:HR:2024:1135 ; ECLI:NL:CRVB:2021:1892.</p>`,
+  `<ul><li>Ga niet alleen: jullie mogen je laten bijstaan door een advocaat of een vertrouwenspersoon. Kan de advocaat niet, vraag dan schriftelijk om uitstel.</li>
+   <li>Vraag aan het begin: ‘Is dit een gesprek dat tot een boete kan leiden?’ Zo ja, dan moeten ze zeggen dat jullie niet verplicht zijn te antwoorden en dat jullie een advocaat mogen raadplegen.</li>
+   <li>Antwoord alleen wat je weet. ‘Dat weet ik niet meer’ en ‘dat moet ik nakijken’ zijn geldige antwoorden. Gok geen data.</li>
+   <li>Lees het verslag regel voor regel. Laat verbeteren wat niet klopt. Teken geen tekst die onjuist is of die je niet begrijpt, en vraag een kopie.</li>
+   <li>De eerste verklaring volgt jullie de hele procedure: daarom bereid je die voor.</li></ul>
+   <p class="law">Art. 2:1 en 5:10a Awb; ECLI:NL:HR:2024:1135; ECLI:NL:CRVB:2021:1892.</p>`)},
+ {when:a=>a.stage==='visit',level:'info',title:T(`Avant la visite à domicile`,`Vóór het huisbezoek`),body:T(
+  `<ul><li>Les enquêteurs n’entrent qu’avec l’accord de ta mère. Ils doivent se présenter, expliquer le but de la visite et dire ce qu’un refus entraîne.</li>
+   <li>Demandez le motif concret de la visite. Mais attention : quand une enquête est ouverte, il y en a presque toujours un. Refuser est un droit à risque : dans une affaire jugée, le refus a suffi à confirmer le retrait de l’aide. Pas de refus sans avocat au téléphone, et toujours avec une offre écrite de prouver la situation autrement.</li>
+   <li>La visite sert à vérifier qui habite là, pas à retourner la maison. L’accord se donne étape par étape : ta mère peut demander pourquoi on veut ouvrir telle armoire, et dire non à ce qui n’a pas de rapport.</li>
+   <li>Faites venir quelqu’un. Notez les noms, l’heure, ce qui a été ouvert et photographié, ce qui a été dit.</li></ul>
+   <p class="law">Art. 53a Participatiewet ; ECLI:NL:CRVB:2007:BA2410, 2017:2071, 2024:191.</p>`,
+  `<ul><li>De onderzoekers komen alleen binnen met toestemming van je moeder. Ze moeten zich legitimeren, het doel van het bezoek uitleggen en zeggen wat een weigering betekent.</li>
+   <li>Vraag naar de concrete aanleiding voor het bezoek. Maar let op: loopt er een onderzoek, dan is die er bijna altijd. Weigeren is een recht met risico: in een uitspraak was de weigering genoeg om de intrekking in stand te laten. Niet weigeren zonder advocaat aan de telefoon, en altijd met een schriftelijk aanbod om de situatie op een andere manier aan te tonen.</li>
+   <li>Het bezoek dient om na te gaan wie er woont, niet om het huis overhoop te halen. Toestemming geef je stap voor stap: je moeder mag vragen waarom ze een bepaalde kast willen openen, en nee zeggen tegen wat er niets mee te maken heeft.</li>
+   <li>Laat iemand erbij zijn. Noteer namen, tijdstip, wat er is geopend en gefotografeerd, en wat er is gezegd.</li></ul>
+   <p class="law">Art. 53a Participatiewet; ECLI:NL:CRVB:2007:BA2410, 2017:2071, 2024:191.</p>`)},
+ {when:a=>a.stage==='after',level:'info',title:T(`Après l’entretien ou la visite`,`Na het gesprek of het huisbezoek`),body:T(
+  `<ul><li>Écrivez aujourd’hui, chacune de votre côté, ce dont vous vous souvenez : qui, quand, quelles questions, quelles réponses.</li>
+   <li>Demandez une copie du compte rendu et du rapport d’enquête complet (lettre type n° 1).</li>
+   <li>Si le compte rendu contient une erreur, signalez-la par écrit tout de suite. Plus on attend, moins la correction pèse.</li>
+   <li>Passez la section « L’enquête » au crible : chaque règle non respectée est un point à donner à l’avocat.</li></ul>`,
+  `<ul><li>Schrijf vandaag, ieder apart, op wat jullie je herinneren: wie, wanneer, welke vragen, welke antwoorden.</li>
+   <li>Vraag een kopie van het verslag en van het volledige onderzoeksrapport (voorbeeldbrief 1).</li>
+   <li>Staat er een fout in het verslag, meld dat dan meteen schriftelijk. Hoe langer je wacht, hoe minder de correctie telt.</li>
+   <li>Loop het onderdeel ‘Het onderzoek’ na: elke regel die niet is nageleefd, is een punt voor de advocaat.</li></ul>`)},
+ {when:a=>a.stage==='stopped',level:'bad',title:T(`L’aide est suspendue : c’est urgent`,`De uitkering is opgeschort: dit is dringend`),body:T(
+  `<ul><li>Une suspension dure huit semaines au plus et doit indiquer ce qu’il faut fournir, et pour quand. Fournissez-le dans le délai, avec preuve d’envoi : sinon l’aide peut être retirée.</li>
+   <li>Si la suspension vient d’un doute sur l’adresse, la commune doit d’abord laisser ta mère prouver sa situation autrement.</li>
+   <li>Faites objection (lettre type n° 2) et demandez en même temps au tribunal une mesure provisoire pour que le paiement reprenne. Frais de greffe : 54 € au tarif réduit en 2026, avec dispense possible si les revenus sont très bas.</li>
+   <li>Plus d’argent pour vivre : demandez à la commune une aide d’urgence, et appelez un avocat aujourd’hui.</li></ul>
+   <p class="law">Art. 53a lid 4 et 54 Participatiewet ; art. 8:81 Awb.</p>`,
+  `<ul><li>Een opschorting duurt hoogstens acht weken en moet vermelden wat er aangeleverd moet worden en vóór wanneer. Lever dat op tijd aan, met bewijs van verzending: anders kan de uitkering worden ingetrokken.</li>
+   <li>Komt de opschorting door twijfel over het adres, dan moet de gemeente je moeder eerst de kans geven haar situatie op een andere manier aan te tonen.</li>
+   <li>Maak bezwaar (voorbeeldbrief 2) en vraag tegelijk de rechtbank om een voorlopige voorziening, zodat de betaling wordt hervat. Griffierecht: € 54 tegen het lage tarief in 2026, met vrijstelling bij een zeer laag inkomen.</li>
+   <li>Geen geld meer om van te leven: vraag de gemeente om noodhulp, en bel vandaag een advocaat.</li></ul>
+   <p class="law">Art. 53a lid 4 en 54 Participatiewet; art. 8:81 Awb.</p>`)},
+ {when:a=>a.stage==='decision',level:'bad',title:T(`Une décision est là : six semaines, pas un jour de plus`,`Er ligt een besluit: zes weken, geen dag langer`),body:T(
+  `<ul><li>Calculez le dernier jour dans « Étapes et délais ». Envoyez l’objection provisoire (lettre type n° 2) tout de suite ; les arguments suivront.</li>
+   <li>Demandez tout le dossier (lettre type n° 1) : vous ne pouvez pas contester des preuves que vous n’avez pas vues.</li>
+   <li>Remboursement et amende sont deux décisions distinctes. Il faut une objection contre chacune.</li>
+   <li>Demandez par écrit que le recouvrement soit suspendu pendant l’objection, et sinon un plan de paiement.</li>
+   <li>Délai dépassé ? Tout n’est pas toujours perdu : un retard peut être excusé pour raisons personnelles sérieuses. Agissez le jour même.</li></ul>
+   <p class="law">Art. 6:7 et 6:11 Awb ; ECLI:NL:CRVB:2024:932.</p>`,
+  `<ul><li>Bereken de laatste dag onder ‘Stappen en termijnen’. Verstuur het pro-formabezwaar (voorbeeldbrief 2) meteen; de argumenten volgen later.</li>
+   <li>Vraag het hele dossier op (voorbeeldbrief 1): je kunt geen bewijs bestrijden dat je niet hebt gezien.</li>
+   <li>Terugvordering en boete zijn twee aparte besluiten. Tegen elk moet apart bezwaar worden gemaakt.</li>
+   <li>Vraag schriftelijk om de invordering tijdens het bezwaar op te schorten, en anders om een betalingsregeling.</li>
+   <li>Termijn voorbij? Niet altijd is alles verloren: een overschrijding kan verschoonbaar zijn bij ernstige persoonlijke omstandigheden. Handel dezelfde dag.</li></ul>
+   <p class="law">Art. 6:7 en 6:11 Awb; ECLI:NL:CRVB:2024:932.</p>`)},
+];
+const TRAPS=[
+ {t:T(`Mentir ou arranger les faits`,`Liegen of de feiten mooier maken`),d:T(`Les enquêteurs comparent ce que dit la mère, ce que dit la fille, les voisins et les relevés. Un mensonge découvert fait passer l’amende au maximum et peut mener au pénal. Un fait gênant expliqué coûte moins cher.`,`Onderzoekers vergelijken wat de moeder zegt, wat de dochter zegt, de buren en de gegevens. Een ontdekte leugen brengt de boete naar het maximum en kan tot strafvervolging leiden. Een lastig feit dat je uitlegt, kost minder.`)},
+ {t:T(`Fabriquer une preuve ou faire signer une attestation de complaisance`,`Bewijs maken of iemand uit vriendschap een verklaring laten tekenen`),d:T(`Un hôtel réservé maintenant ne prouve rien sur les mois passés. Une attestation qui dit plus que ce que la personne a vu est une infraction pour celui qui signe.`,`Een hotel dat je nu boekt, bewijst niets over de afgelopen maanden. Een verklaring die meer zegt dan iemand zelf heeft gezien, is strafbaar voor wie tekent.`)},
+ {t:T(`Mettre le logement en scène avant une visite`,`De woning ‘klaarzetten’ vóór een huisbezoek`),d:T(`Avant de sonner, les enquêteurs ont en général déjà des éléments : voisins, observations, consommation d’eau. Un logement « nettoyé » qui les contredit ne les efface pas : il fait croire que tout le reste est arrangé aussi, et il montre une intention de cacher. Des affaires expliquées se défendent mieux que des affaires disparues. Emporter réellement ses affaires là où l’on vit est normal, mais ne change rien pour les mois passés.`,`Voordat ze aanbellen, hebben onderzoekers meestal al gegevens: buren, waarnemingen, waterverbruik. Een ‘opgeruimde’ woning die daarmee in strijd is, wist die niet uit: ze wekt de indruk dat ook de rest in scène is gezet, en wijst op opzet om iets te verbergen. Spullen die je uitlegt, zijn beter te verdedigen dan spullen die verdwenen zijn. Je spullen echt meenemen naar waar je woont is normaal, maar verandert niets aan de afgelopen maanden.`)},
+ {t:T(`Ne pas répondre aux lettres`,`Niet reageren op brieven`),d:T(`L’aide est suspendue puis retirée, sans débat sur le fond. Si ta mère ne montre pas qui vit chez elle quand on le lui demande, l’aide peut tomber à 30 % de la norme.`,`De uitkering wordt opgeschort en daarna ingetrokken, zonder inhoudelijke discussie. Toont je moeder op verzoek niet aan wie er bij haar woont, dan kan de uitkering naar 30% van de norm gaan.`)},
+ {t:T(`Refuser une visite en pensant qu’il n’y a pas de motif`,`Een huisbezoek weigeren omdat je denkt dat er geen aanleiding is`),d:T(`Quand une enquête est ouverte, il y a presque toujours un motif. Dans une affaire jugée, les agents ont laissé quinze minutes pour coopérer et le refus a suffi à confirmer le retrait de l’aide (ECLI:NL:CRVB:2024:1251). Pas de refus sans avocat au téléphone, et toujours avec une offre écrite de prouver autrement.`,`Loopt er een onderzoek, dan is er bijna altijd een aanleiding. In een uitspraak kregen de bewoners vijftien minuten om mee te werken en was de weigering genoeg om de intrekking in stand te laten (ECLI:NL:CRVB:2024:1251). Niet weigeren zonder advocaat aan de telefoon, en altijd met een schriftelijk aanbod om het op een andere manier aan te tonen.`)},
+ {t:T(`Se taire sur tout`,`Overal over zwijgen`),d:T(`Le droit de se taire ne protège que de l’amende. Pour l’aide elle-même, ta mère doit répondre aux questions : se taire peut la lui faire perdre.`,`Het zwijgrecht beschermt alleen tegen de boete. Voor de uitkering zelf moet je moeder vragen beantwoorden: zwijgen kan haar de uitkering kosten.`)},
+ {t:T(`Tout miser sur une irrégularité de l’enquête`,`Alles inzetten op een fout in het onderzoek`),d:T(`Une preuve écartée ne fait gagner que si le reste du dossier ne suffit plus. C’est un plus pour l’avocat, pas une stratégie.`,`Uitgesloten bewijs levert alleen winst op als de rest van het dossier niet meer genoeg is. Het is een extra voor de advocaat, geen strategie.`)},
+ {t:T(`Faire traîner pour attendre la loi de 2027`,`Rekken om op de wet van 2027 te wachten`),d:T(`La date d’une décision ne se fabrique pas. Refuser de coopérer pour gagner du temps mène à la suspension. Utiliser ses droits (demander le dossier, répondre dans le délai accordé) est autre chose.`,`De datum van een besluit kun je niet sturen. Niet meewerken om tijd te winnen leidt tot opschorting. Je rechten gebruiken (het dossier opvragen, binnen de gegeven termijn reageren) is iets anders.`)},
+ {t:T(`Laisser passer les six semaines après une décision`,`De zes weken na een besluit laten verlopen`),d:T(`Après, la décision est définitive, même si elle est fausse. Une objection provisoire de dix lignes suffit à sauver le délai.`,`Daarna staat het besluit vast, ook als het onjuist is. Een pro-formabezwaar van tien regels is genoeg om de termijn te redden.`)},
+ {t:T(`Se fier à ce guide plus qu’à un avocat`,`Meer op deze gids vertrouwen dan op een advocaat`),d:T(`Le guide ne connaît ni tes pièces ni ce que l’enquête a déjà trouvé, et il peut se tromper sur ton cas. Avant de refuser, signer, reconnaître ou contester quoi que ce soit : un avocat. Si le guide et l’avocat se contredisent, c’est l’avocat qui a raison.`,`De gids kent je stukken niet en weet niet wat het onderzoek al heeft gevonden, en hij kan er in jouw geval naast zitten. Voordat je iets weigert, tekent, erkent of aanvecht: een advocaat. Spreken de gids en de advocaat elkaar tegen, dan heeft de advocaat gelijk.`)}
+];
+/* contrôle minimal de la logique : échoue dans la console si une branche se casse */
+console.assert(HEADS.find(r=>r.when({benefit:'pw',rent:'no',age:'u27'})).level==='ok','u27');
+console.assert(HEADS.find(r=>r.when({benefit:'pw',rent:'no',age:'o27',student:'no',reality:'mother'})).level==='bad','mother');
+console.assert(HEADS.find(r=>r.when({benefit:'uwv',rent:'no',age:'o27',student:'no',reality:'mother'})).level==='ok','uwv');
+/*END:tree*/
+/*DATA:map*/
+const MAP=[
+ {t:T(`L’aide de ta mère peut-elle baisser à cause de toi ?`,`Kan de uitkering van je moeder door jou omlaag?`),kids:[
+  {t:T(`Elle touche l’aide sociale de la commune, ou une allocation UWV avec complément`,`Ze krijgt bijstand van de gemeente, of een UWV-uitkering met toeslag`),kids:[
+   {t:T(`Tu avais moins de 27 ans`,`Je was jonger dan 27`),level:'ok',body:T(`Pas de baisse, même si tu habitais là. Avant 2023, le seuil était 21 ans.`,`Geen verlaging, ook niet als je er woonde. Vóór 2023 lag de grens bij 21 jaar.`)},
+   {t:T(`Tu avais 27 ans ou plus`,`Je was 27 of ouder`),kids:[
+    {t:T(`Tu étais en études (financement d’études possible, ou BBL)`,`Je volgde een opleiding (studiefinanciering mogelijk, of bbl)`),level:'ok',body:T(`Pas de baisse pendant les mois d’inscription.`,`Geen verlaging in de maanden dat je stond ingeschreven.`)},
+    {t:T(`Tu n’étais pas en études`,`Je volgde geen opleiding`),kids:[
+     {t:T(`Ta résidence principale était ailleurs, chez une autre personne`,`Je hoofdverblijf was ergens anders, bij iemand anders`),level:'ok',body:T(`Pas de baisse. Il faut pouvoir montrer où tu vivais, et ton inscription doit suivre.`,`Geen verlaging. Je moet kunnen laten zien waar je woonde, en je inschrijving moet kloppen.`)},
+     {t:T(`Tu n’avais de résidence principale nulle part`,`Je had nergens een hoofdverblijf`),level:'ok',body:T(`Pas de baisse : les juges admettent qu’on puisse n’habiter nulle part. C’est la branche la plus disputée sur les preuves.`,`Geen verlaging: rechters erkennen dat iemand nergens kan wonen. Dit is de vertakking waar het meest over het bewijs wordt gestreden.`)},
+     {t:T(`Tu logeais chez elle temporairement, pendant une crise`,`Je logeerde tijdelijk bij haar, tijdens een crisis`),level:'warn',body:T(`Les lignes directrices disent de ne pas appliquer la baisse pour un séjour temporaire ; certaines communes fixent trois ou six mois. Au-delà de six mois, on présume la résidence.`,`De richtlijnen zeggen de norm bij tijdelijk verblijf niet toe te passen; sommige gemeenten hanteren drie of zes maanden. Na zes maanden wordt hoofdverblijf aangenomen.`)},
+     {t:T(`Ta résidence principale était chez elle`,`Je hoofdverblijf was bij haar`),level:'bad',body:T(`La norme de partage s’applique : 405,56 € de moins par mois pour un foyer de deux (taux de juillet 2026). Voir « Que peut-il arriver au pire ».`,`De kostendelersnorm geldt: € 405,56 per maand minder bij een huishouden van twee (bedragen juli 2026). Zie ‘Wat kan er in het ergste geval gebeuren’.`)}]}]}]},
+  {t:T(`Elle touche une allocation UWV sans complément`,`Ze krijgt een UWV-uitkering zonder toeslag`),level:'ok',body:T(`L’allocation de base ne dépend pas de qui habite là. À faire confirmer par l’UWV.`,`De gewone uitkering hangt niet af van wie er woont. Laat het UWV dit bevestigen.`)},
+  {t:T(`Elle touche l’aide au loyer`,`Ze krijgt huurtoeslag`),level:'warn',body:T(`Seule compte la personne inscrite à l’adresse. Inscrite ailleurs, tu n’es pas comptée, sauf si ton inscription est corrigée après coup.`,`Alleen wie op het adres staat ingeschreven telt mee. Sta je elders ingeschreven, dan tel je niet mee, tenzij je inschrijving achteraf wordt aangepast.`)},
+  {t:T(`Mère et fille peuvent-elles être traitées comme un couple ?`,`Kunnen moeder en dochter als stel worden behandeld?`),level:'ok',body:T(`Non. Un parent et son enfant ne forment jamais un « ménage commun » au sens de la loi, et ne sont jamais partenaires pour les allocations.`,`Nee. Een ouder en een kind voeren nooit een ‘gezamenlijke huishouding’ in de zin van de wet, en zijn nooit toeslagpartners.`)}]},
+ {t:T(`Où est ta résidence principale aux yeux des juges ?`,`Waar is je hoofdverblijf volgens de rechter?`),kids:[
+  {t:T(`Ce qui ne décide pas`,`Wat niet beslissend is`),level:'ok',body:T(`Ton inscription à la commune. Un seul indice isolé : un voisin vague, des paiements par carte dans le quartier, des trajets, une consommation d’électricité.`,`Je inschrijving bij de gemeente. Eén losse aanwijzing: een vage buur, pinbetalingen in de buurt, reisgegevens, stroomverbruik.`)},
+  {t:T(`Ce qui pèse pour « chez ta mère »`,`Wat wijst op ‘bij je moeder’`),level:'bad',body:T(`Tu y es presque tous les jours. Tes vêtements et tes affaires y sont. Ton courrier y arrive. Tu n’as aucun autre endroit identifiable. Cela dure depuis plus de six mois.`,`Je bent er bijna elke dag. Je kleren en spullen liggen er. Je post komt er aan. Je hebt geen andere aanwijsbare plek. Het duurt al langer dan zes maanden.`)},
+  {t:T(`Ce qui pèse pour « ailleurs » ou « nulle part »`,`Wat wijst op ‘elders’ of ‘nergens’`),level:'ok',body:T(`Deux à quatre nuits par semaine au plus. Des traces datées de tes nuits ailleurs. Des hôtes qui confirment des faits précis. Des affaires réparties. Une explication simple et constante.`,`Hooguit twee tot vier nachten per week. Gedateerde sporen van je nachten elders. Gastheren die concrete feiten bevestigen. Spullen op meerdere plekken. Een eenvoudige en consequente uitleg.`)},
+  {t:T(`Ce que les juges font des déclarations`,`Wat rechters met verklaringen doen`),level:'warn',body:T(`Ils partent de la première déclaration faite aux enquêteurs. Une attestation de la famille écrite après coup pèse peu si elle la contredit ; une attestation précise, donnée tôt et recoupée par d’autres traces, pèse.`,`Ze gaan uit van de eerste verklaring tegenover de onderzoekers. Een later geschreven verklaring van familie telt weinig als ze die tegenspreekt; een concrete verklaring die vroeg is gegeven en door andere sporen wordt bevestigd, telt wel.`)}]},
+ {t:T(`Une preuve mal obtenue peut-elle être écartée ?`,`Kan onrechtmatig verkregen bewijs worden uitgesloten?`),kids:[
+  {t:T(`Visite à domicile sans accord éclairé et sans motif concret`,`Huisbezoek zonder geïnformeerde toestemming en zonder concrete aanleiding`),level:'ok',body:T(`Ce qui a été vu pendant la visite ne peut pas servir. Si la décision ne repose que là-dessus, elle tombe.`,`Wat tijdens het bezoek is gezien, mag niet worden gebruikt. Rust het besluit alleen daarop, dan valt het.`)},
+  {t:T(`Visite à domicile sans accord prouvé, mais avec un motif concret`,`Huisbezoek zonder bewezen toestemming, maar met een concrete aanleiding`),level:'warn',body:T(`L’atteinte au domicile est reconnue, mais les constatations restent en général utilisables.`,`De inbreuk op het huisrecht wordt erkend, maar de bevindingen blijven meestal bruikbaar.`)},
+  {t:T(`Surveillance systématique, balise GPS, caméra cachée`,`Stelselmatige observatie, gps-baken, verborgen camera`),level:'ok',body:T(`Preuve écartée : il n’y a pas de base légale suffisante.`,`Bewijs uitgesloten: er is geen toereikende wettelijke grondslag.`)},
+  {t:T(`Courtes observations depuis la rue`,`Korte waarnemingen vanaf de openbare weg`),level:'bad',body:T(`Permises si elles restent limitées et proportionnées.`,`Toegestaan als ze beperkt en proportioneel blijven.`)},
+  {t:T(`Audition sans avoir été prévenue du droit de se taire`,`Verhoor zonder cautie`),level:'warn',body:T(`La déclaration est écartée pour l’amende seulement. Elle peut encore servir pour le remboursement.`,`De verklaring wordt alleen voor de boete uitgesloten. Voor de terugvordering mag ze nog worden gebruikt.`)},
+  {t:T(`Sélection par un profil discriminatoire`,`Selectie via een discriminerend risicoprofiel`),level:'ok',body:T(`Interdite. Ce que l’enquête a trouvé peut devenir inutilisable.`,`Verboden. Wat het onderzoek heeft opgeleverd, kan onbruikbaar worden.`)},
+  {t:T(`Et si une preuve tombe ?`,`En als één bewijsstuk wegvalt?`),level:'warn',body:T(`Le dossier ne tombe pas tout seul : seule cette preuve est retirée. Il tombe si ce qui reste ne suffit plus à prouver que tu habitais là.`,`Het dossier valt niet vanzelf: alleen dat bewijs gaat eruit. Het valt als wat overblijft niet meer genoeg is om te bewijzen dat je er woonde.`)}]},
+ {t:T(`Que peut-il arriver au pire, et qu’est-ce qui le limite ?`,`Wat kan er in het ergste geval gebeuren, en wat begrenst dat?`),kids:[
+  {t:T(`Rien n’est établi`,`Er wordt niets vastgesteld`),level:'ok',body:T(`L’enquête se termine et l’aide continue. Demandez une confirmation écrite.`,`Het onderzoek stopt en de uitkering loopt door. Vraag om een schriftelijke bevestiging.`)},
+  {t:T(`L’aide est coupée pour manque de coopération`,`De uitkering stopt omdat er niet wordt meegewerkt`),level:'bad',body:T(`Ne pas répondre mène à une suspension de huit semaines au plus, puis au retrait. Si ta mère ne montre pas combien d’adultes vivent chez elle quand on le lui demande, l’aide peut être calculée au niveau le plus bas. C’est le risque le plus facile à éviter : répondre, à temps, par écrit.`,`Niet reageren leidt tot een opschorting van hoogstens acht weken en daarna tot intrekking. Toont je moeder op verzoek niet aan hoeveel volwassenen bij haar wonen, dan kan de uitkering op het laagste niveau worden berekend. Dit risico is het makkelijkst te vermijden: reageren, op tijd, schriftelijk.`)},
+  {t:T(`Remboursement du passé`,`Terugbetaling over het verleden`),kids:[
+   {t:T(`Combien`,`Hoeveel`),level:'warn',body:T(`En principe la différence entre les deux normes, pour les seuls mois où ta résidence chez elle est prouvée.`,`In principe het verschil tussen de twee normen, alleen voor de maanden waarin je hoofdverblijf bij haar is bewezen.`)},
+   {t:T(`Jusqu’où en arrière`,`Hoe ver terug`),level:'warn',body:T(`Aujourd’hui : prescription de cinq ans à partir du moment où l’administration a su, vingt ans au maximum. Avec la loi attendue en 2027 : cinq ans avant la décision, sauf cas graves.`,`Nu: verjaring vijf jaar nadat de overheid het wist, hoogstens twintig jaar. Met de wet die in 2027 wordt verwacht: vijf jaar vóór het besluit, behalve in ernstige gevallen.`)},
+   {t:T(`Ce qui le réduit`,`Wat het verlaagt`),level:'ok',body:T(`Raisons impérieuses et proportionnalité. Inaction de l’administration plus de six mois après un signalement. Montant net au lieu de brut. Plan de paiement qui laisse le minimum vital. Remise possible après dix ans de paiements, ou contre la moitié du solde en une fois.`,`Dringende redenen en evenredigheid. Stilzitten van de overheid langer dan zes maanden na een melding. Netto in plaats van bruto. Een betalingsregeling die de beslagvrije voet respecteert. Kwijtschelding mogelijk na tien jaar betalen, of tegen de helft van het restant ineens.`)}]},
+  {t:T(`Amende`,`Boete`),kids:[
+   {t:T(`Son niveau`,`De hoogte`),level:'warn',body:T(`100 % du montant en cas d’intention, 75 % pour faute grave, 50 % pour faute ordinaire, 25 % pour faute atténuée.`,`100% van het bedrag bij opzet, 75% bij grove schuld, 50% bij gewone verwijtbaarheid, 25% bij verminderde verwijtbaarheid.`)},
+   {t:T(`Ce qui la réduit`,`Wat haar verlaagt`),level:'ok',body:T(`La maladie ou le handicap de ta mère. La part de responsabilité de l’administration. Vos moyens : elle doit pouvoir être payée en 6 à 24 mois selon la faute.`,`De ziekte of beperking van je moeder. Het aandeel van de overheid. Jullie draagkracht: de boete moet in 6 tot 24 maanden kunnen worden betaald, afhankelijk van de verwijtbaarheid.`)},
+   {t:T(`Simple avertissement`,`Alleen een waarschuwing`),level:'warn',body:T(`Possible quand on corrige soi-même dans les soixante jours. En général plus possible une fois le contrôle ouvert.`,`Mogelijk als je het zelf binnen zestig dagen herstelt. Meestal niet meer mogelijk zodra het onderzoek loopt.`)}]},
+  {t:T(`Poursuites pénales`,`Strafvervolging`),level:'bad',body:T(`En principe seulement au-delà de 50 000 € bruts ou en cas de circonstances aggravantes, par exemple de faux documents. C’est l’amende ou le pénal, jamais les deux pour le même fait.`,`In principe alleen boven € 50.000 bruto of bij verzwarende omstandigheden, bijvoorbeeld valse documenten. Het is de boete of het strafrecht, nooit allebei voor hetzelfde feit.`)}]},
+ {t:T(`Où dois-tu être inscrite ?`,`Waar moet je ingeschreven staan?`),kids:[
+  {t:T(`Tu dors presque toujours au même endroit`,`Je slaapt bijna altijd op dezelfde plek`),level:'ok',body:T(`Là. Un déménagement se déclare dans les cinq jours.`,`Daar. Een verhuizing geef je binnen vijf dagen door.`)},
+  {t:T(`Tu vis à plusieurs adresses`,`Je woont op meerdere adressen`),level:'ok',body:T(`À celle où tu dors le plus de nuits sur six mois.`,`Op het adres waar je over een half jaar de meeste nachten slaapt.`)},
+  {t:T(`Aucune adresse ne ressort`,`Geen enkel adres springt eruit`),level:'ok',body:T(`Tu n’as pas d’adresse de résidence : il te faut une adresse postale, chez quelqu’un qui donne son accord écrit ou à la commune.`,`Je hebt geen woonadres: je hebt een briefadres nodig, bij iemand die schriftelijk toestemming geeft of bij de gemeente.`)},
+  {t:T(`Tu restes inscrite à une adresse fausse`,`Je blijft op een onjuist adres staan`),level:'bad',body:T(`Amende jusqu’à 325 €, enquête d’adresse, et risque d’être radiée comme « partie sans laisser d’adresse ».`,`Boete tot € 325, adresonderzoek, en het risico om te worden uitgeschreven als ‘vertrokken onbekend waarheen’.`)}]}
+];
+/*END:map*/
+/*DATA:checkpoints*/
+const CHECKS=[
+ {group:T(`Le point de départ`,`Het begin`),items:[
+  {id:'tip',act:T(`Savez-vous ce qui a déclenché l’enquête ?`,`Weten jullie waardoor het onderzoek is gestart?`),rule:T(`Un contrôle peut partir d’un signalement, même anonyme, ou d’une sélection par profil de risque. Un profil fondé sur l’origine ou la nationalité est interdit.`,`Een onderzoek mag starten door een melding, ook een anonieme, of door selectie via een risicoprofiel. Een profiel op basis van afkomst of nationaliteit is verboden.`),ifNo:T(`Demandez dans le dossier ce qui a déclenché l’enquête. Une sélection discriminatoire peut rendre inutilisable ce que l’enquête a trouvé.`,`Vraag in het dossier na wat de aanleiding was. Een discriminerende selectie kan het onderzoeksresultaat onbruikbaar maken.`),law:T(`ECLI:NL:CRVB:2020:1664, 2018:4329`,`ECLI:NL:CRVB:2020:1664, 2018:4329`)},
+  {id:'delay',act:T(`L’administration a-t-elle agi dans les six mois après le signalement ?`,`Is de overheid binnen zes maanden na de melding in actie gekomen?`),rule:T(`Quand elle reçoit un signalement concret et laisse courir, le trop-versé qui s’accumule ensuite est en partie de son fait.`,`Krijgt ze een concreet signaal en laat ze het liggen, dan is wat daarna te veel wordt betaald deels aan haar te wijten.`),ifNo:T(`Argument pour limiter le remboursement à la période précédant ces six mois, ou pour le réduire au titre des raisons impérieuses.`,`Argument om de terugvordering te beperken tot de periode vóór die zes maanden, of om haar te matigen wegens dringende redenen.`),law:T(`ECLI:NL:CRVB:2019:549, 2026:1000`,`ECLI:NL:CRVB:2019:549, 2026:1000`)}]},
+ {group:T(`La visite à domicile`,`Het huisbezoek`),items:[
+  {id:'consent',act:T(`Ta mère a-t-elle donné un accord libre et éclairé ?`,`Heeft je moeder vrij en geïnformeerd toestemming gegeven?`),rule:T(`Les enquêteurs doivent se présenter, dire pourquoi ils viennent et expliquer ce qu’un refus entraîne. C’est à l’administration de prouver cet accord.`,`Onderzoekers moeten zich legitimeren, zeggen waarom ze komen en uitleggen wat een weigering betekent. De overheid moet die toestemming bewijzen.`),ifNo:T(`S’il n’y avait pas non plus de motif concret, ce qui a été constaté pendant la visite ne peut pas servir de preuve. S’il y avait un motif concret, les constatations restent en général utilisables, mais l’atteinte au domicile se plaide quand même.`,`Was er ook geen concrete aanleiding, dan mag wat tijdens het bezoek is vastgesteld niet als bewijs dienen. Was er wel een concrete aanleiding, dan blijven de bevindingen meestal bruikbaar, maar de inbreuk op het huisrecht kan nog steeds worden aangevoerd.`),law:T(`ECLI:NL:CRVB:2007:BA2410, 2017:2071`,`ECLI:NL:CRVB:2007:BA2410, 2017:2071`)},
+  {id:'ground',act:T(`Y avait-il un motif concret avant de sonner ?`,`Was er een concrete aanleiding voordat ze aanbelden?`),rule:T(`Un « motif raisonnable » suppose des faits précis et objectifs, connus avant la visite, et qu’aucun moyen moins intrusif ne suffisait. Sans lui, refuser ne peut avoir aucune conséquence, et ta mère devait en être informée.`,`Een ‘redelijke grond’ vraagt om concrete, objectieve feiten die vóór het bezoek bekend waren, en dat een minder ingrijpend middel niet volstond. Zonder die grond mag weigeren geen gevolgen hebben, en dat moest je moeder weten.`),ifNo:T(`Si on lui a laissé croire qu’un refus couperait l’aide alors qu’il n’y avait pas de motif, son accord n’est pas valable.`,`Is haar voorgehouden dat weigeren de uitkering zou kosten terwijl er geen grond was, dan is haar toestemming niet geldig.`),law:T(`ECLI:NL:CRVB:2024:191, 2024:1251`,`ECLI:NL:CRVB:2024:191, 2024:1251`)},
+  {id:'alt',act:T(`Avant de couper l’aide pour refus, lui a-t-on laissé prouver sa situation autrement ?`,`Kreeg ze, voordat de uitkering na een weigering werd gestopt, de kans haar situatie anders aan te tonen?`),rule:T(`Même avec un motif, un refus n’a de conséquence qu’après l’offre de démontrer la situation de logement par un autre moyen.`,`Ook met een grond heeft een weigering pas gevolgen nadat is aangeboden de woonsituatie op een andere manier aan te tonen.`),ifNo:T(`La suspension ou la réduction est attaquable.`,`De opschorting of verlaging is aanvechtbaar.`),law:T(`Art. 53a leden 3–5 Participatiewet`,`Art. 53a leden 3–5 Participatiewet`)},
+  {id:'scope',act:T(`La visite s’est-elle limitée à ce qui était nécessaire ?`,`Bleef het bezoek beperkt tot wat nodig was?`),rule:T(`Vérifier une situation de logement ne permet pas de tout fouiller, de lire le courrier ou de photographier sans demander.`,`Een woonsituatie controleren geeft geen recht om alles te doorzoeken, post te lezen of ongevraagd te fotograferen.`),ifNo:T(`À décrire précisément dans l’objection ; plainte possible auprès du médiateur, qui a déjà constaté une atteinte grave au droit au domicile.`,`Beschrijf dit precies in het bezwaar; een klacht bij de ombudsman is mogelijk, die al eens een ernstige schending van het huisrecht vaststelde.`),law:T(`Nationale ombudsman, rapport 2025/073`,`Nationale ombudsman, rapport 2025/073`)}]},
+ {group:T(`La surveillance et les données`,`Observatie en gegevens`),items:[
+  {id:'obs',act:T(`La surveillance est-elle restée courte et depuis la rue ?`,`Bleef de observatie kort en vanaf de openbare weg?`),rule:T(`De brèves observations depuis la voie publique sont permises. Une surveillance systématique, une balise GPS ou une caméra cachée ne le sont pas.`,`Korte waarnemingen vanaf de openbare weg zijn toegestaan. Stelselmatige observatie, een gps-baken of een verborgen camera niet.`),ifNo:T(`Preuve écartée, faute de base légale suffisante.`,`Bewijs uitgesloten wegens ontbreken van een toereikende wettelijke grondslag.`),law:T(`ECLI:NL:CRVB:2017:2807, 2016:947, 2016:3479 ; permis : 2022:980`,`ECLI:NL:CRVB:2017:2807, 2016:947, 2016:3479; toegestaan: 2022:980`)},
+  {id:'single',act:T(`Le dossier repose-t-il sur plusieurs éléments solides qui se recoupent ?`,`Rust het dossier op meerdere stevige gegevens die elkaar bevestigen?`),rule:T(`Des voisins vagues, des lieux de paiement, des trajets, des livraisons ou une consommation d’eau élevée ne sont que des indices. Aucun ne suffit seul.`,`Vage buren, pinlocaties, reisgegevens, bezorgingen of een hoog waterverbruik zijn slechts aanwijzingen. Geen ervan volstaat op zichzelf.`),ifNo:T(`L’administration n’a pas apporté la preuve qui lui incombe.`,`De overheid heeft het bewijs dat op haar rust niet geleverd.`),law:T(`ECLI:NL:CRVB:2022:2553, 2018:1986`,`ECLI:NL:CRVB:2022:2553, 2018:1986`)},
+  {id:'months',act:T(`Chaque mois réclamé est-il prouvé ?`,`Is elke maand die wordt teruggevraagd bewezen?`),rule:T(`Une constatation un jour donné ne prouve pas toute une période. L’administration doit rendre plausible chaque partie de la période.`,`Een vaststelling op één dag bewijst geen hele periode. De overheid moet elk deel van de periode aannemelijk maken.`),ifNo:T(`Demandez que le remboursement soit limité aux mois réellement prouvés.`,`Vraag om de terugvordering te beperken tot de maanden die echt bewezen zijn.`),law:T(`ECLI:NL:CRVB:2022:1314`,`ECLI:NL:CRVB:2022:1314`)}]},
+ {group:T(`L’entretien`,`Het gesprek`),items:[
+  {id:'cautie',act:T(`Vous a-t-on dit que vous n’étiez pas obligées de répondre ?`,`Is gezegd dat jullie niet verplicht waren te antwoorden?`),rule:T(`Dès qu’une amende est envisagée, cet avertissement est obligatoire avant les questions.`,`Zodra een boete in beeld is, is deze mededeling verplicht vóór de vragen.`),ifNo:T(`La déclaration ne peut pas servir pour l’amende. Elle reste utilisable pour le remboursement.`,`De verklaring mag niet voor de boete worden gebruikt. Voor de terugvordering blijft ze bruikbaar.`),law:T(`Art. 5:10a Awb ; ECLI:NL:CRVB:2017:3338`,`Art. 5:10a Awb; ECLI:NL:CRVB:2017:3338`)},
+  {id:'lawyer',act:T(`Vous a-t-on dit que vous pouviez consulter un avocat avant ?`,`Is gezegd dat jullie vooraf een advocaat mochten raadplegen?`),rule:T(`Avant un interrogatoire en vue d’une amende, l’information sur le droit à un avocat est exigée.`,`Vóór een verhoor met het oog op een boete moet op het recht op een advocaat worden gewezen.`),ifNo:T(`Argument pour écarter la déclaration dans la procédure d’amende.`,`Argument om de verklaring in de boeteprocedure uit te sluiten.`),law:T(`ECLI:NL:HR:2024:1135 ; ECLI:NL:CBB:2026:111`,`ECLI:NL:HR:2024:1135; ECLI:NL:CBB:2026:111`)},
+  {id:'assist',act:T(`Avez-vous pu venir accompagnées ?`,`Mochten jullie iemand meenemen?`),rule:T(`Chacun peut se faire assister ou représenter devant l’administration.`,`Iedereen mag zich tegenover de overheid laten bijstaan of vertegenwoordigen.`),ifNo:T(`À signaler par écrit ; cela affaiblit la valeur de l’entretien.`,`Schriftelijk melden; het verzwakt de waarde van het gesprek.`),law:T(`Art. 2:1 Awb`,`Art. 2:1 Awb`)},
+  {id:'lang',act:T(`Avez-vous compris chaque question, dans une langue que vous maîtrisez ?`,`Begrepen jullie elke vraag, in een taal die jullie beheersen?`),rule:T(`Une déclaration ne vaut que si la personne a compris les questions et le texte qu’elle signe.`,`Een verklaring telt alleen als de persoon de vragen en de ondertekende tekst begreep.`),ifNo:T(`Une déclaration signée sans la comprendre peut être écartée.`,`Een verklaring die is getekend zonder haar te begrijpen, kan buiten beschouwing blijven.`),law:T(`ECLI:NL:RBOVE:2025:39`,`ECLI:NL:RBOVE:2025:39`)},
+  {id:'record',act:T(`Le compte rendu dit-il exactement ce que vous avez dit, et l’avez-vous relu avant de signer ?`,`Staat in het verslag precies wat jullie zeiden, en is het gelezen vóór het tekenen?`),rule:T(`Une déclaration relue et signée sans réserve vous lie, sauf pression, compte rendu inexact ou autre raison sérieuse.`,`Een verklaring die zonder voorbehoud is gelezen en getekend, bindt jullie, behalve bij druk, een onjuist verslag of een andere zwaarwegende reden.`),ifNo:T(`Écrivez tout de suite ce qui est inexact et pourquoi. Plus la correction vient tôt, plus elle pèse.`,`Schrijf meteen op wat niet klopt en waarom. Hoe eerder de correctie komt, hoe zwaarder ze weegt.`),law:T(`ECLI:NL:CRVB:2021:1892, 2019:2819`,`ECLI:NL:CRVB:2021:1892, 2019:2819`)}]},
+ {group:T(`La décision`,`Het besluit`),items:[
+  {id:'file',act:T(`Avez-vous reçu tout le dossier ?`,`Hebben jullie het hele dossier gekregen?`),rule:T(`Pendant l’objection, vous avez droit à toutes les pièces : rapport d’enquête, journaux d’observation, déclarations de témoins.`,`Tijdens het bezwaar hebben jullie recht op alle stukken: onderzoeksrapport, observatieverslagen, getuigenverklaringen.`),ifNo:T(`Demandez-le par écrit (lettre type n° 1) et faites reporter l’audience tant qu’il manque des pièces.`,`Vraag het schriftelijk op (voorbeeldbrief 1) en laat de hoorzitting uitstellen zolang er stukken ontbreken.`),law:T(`Art. 7:4 et 5:49 Awb ; art. 15 RGPD`,`Art. 7:4 en 5:49 Awb; art. 15 AVG`)},
+  {id:'calc',act:T(`Le calcul porte-t-il seulement sur la différence entre les deux normes ?`,`Gaat de berekening alleen over het verschil tussen de twee normen?`),rule:T(`Un co-habitant non déclaré mène à un recalcul, pas au retrait de toute l’aide.`,`Een niet-gemelde kostendeler leidt tot herziening, niet tot intrekking van de hele uitkering.`),ifNo:T(`Contestez le retrait total et demandez un calcul mois par mois.`,`Bestrijd de volledige intrekking en vraag om een berekening per maand.`),law:T(`ECLI:NL:CRVB:2025:768, 2022:2625`,`ECLI:NL:CRVB:2025:768, 2022:2625`)},
+  {id:'net',act:T(`Le montant réclamé a-t-il été vérifié, net ou brut ?`,`Is nagekeken of het bedrag netto of bruto is?`),rule:T(`Selon l’année et les circonstances, l’administration doit réclamer le montant net et non le brut, plus élevé.`,`Afhankelijk van het jaar en de omstandigheden moet de overheid het nettobedrag terugvragen en niet het hogere brutobedrag.`),ifNo:T(`Faites recalculer par l’avocat.`,`Laat de advocaat dit narekenen.`),law:T(`ECLI:NL:CRVB:2012:BY2110`,`ECLI:NL:CRVB:2012:BY2110`)},
+  {id:'prop',act:T(`A-t-on tenu compte de la maladie de ta mère et de vos moyens ?`,`Is rekening gehouden met de ziekte van je moeder en met jullie draagkracht?`),rule:T(`L’administration doit peser les conséquences pour la personne. Pour l’amende, la maladie et la capacité de payer sont des motifs de réduction.`,`De overheid moet de gevolgen voor de persoon afwegen. Bij de boete zijn ziekte en draagkracht gronden voor matiging.`),ifNo:T(`Invoquez les raisons impérieuses et la proportionnalité, avec des pièces médicales et un budget.`,`Beroep je op dringende redenen en evenredigheid, met medische stukken en een budgetoverzicht.`),law:T(`Art. 58 lid 8 et 18a lid 7 Participatiewet ; ECLI:NL:CRVB:2024:2192`,`Art. 58 lid 8 en 18a lid 7 Participatiewet; ECLI:NL:CRVB:2024:2192`)}]}
+];
+/*END:checkpoints*/
+/*DATA:evidence*/
+const EVIDENCE=[
+ {group:T(`Les traces de tes nuits ailleurs`,`Sporen van je nachten elders`),intro:T(`Aucune de ces traces ne suffit seule. Ensemble et datées, elles montrent où ta vie se passait.`,`Geen van deze sporen is op zichzelf genoeg. Samen en met datum laten ze zien waar je leven zich afspeelde.`),items:[
+  {id:'bank',t:T(`Relevés bancaires des mois examinés`,`Bankafschriften van de onderzochte maanden`),d:T(`Les lieux et les heures des paiements par carte, surtout tôt le matin et tard le soir.`,`Plaats en tijd van pinbetalingen, vooral vroeg in de ochtend en laat op de avond.`)},
+  {id:'ov',t:T(`Historique de tes trajets en transports`,`Je reishistorie in het openbaar vervoer`),d:T(`À télécharger vite : l’historique en ligne ne remonte pas indéfiniment.`,`Download het snel: de online historie gaat niet eindeloos terug.`)},
+  {id:'loc',t:T(`Historique de position de ton téléphone`,`Locatiegeschiedenis van je telefoon`),d:T(`S’il était activé, il montre où le téléphone passait la nuit.`,`Als die aanstond, laat hij zien waar je telefoon ’s nachts was.`)},
+  {id:'msg',t:T(`Messages où tu organises tes nuits`,`Berichten waarin je je slaapplek regelt`),d:T(`« Je peux dormir chez toi ce soir ? », avec la date visible. Captures complètes, non retouchées.`,`‘Kan ik vanavond bij jou slapen?’, met de datum zichtbaar. Volledige, onbewerkte schermafbeeldingen.`)},
+  {id:'photo',t:T(`Photos et vidéos datées prises là où tu dormais`,`Gedateerde foto’s en video’s van de plekken waar je sliep`)},
+  {id:'work',t:T(`Planning de travail, d’études ou de stage`,`Werk-, studie- of stagerooster`),d:T(`Avec l’adresse : il montre d’où tu partais le matin.`,`Met het adres: het laat zien waarvandaan je ’s ochtends vertrok.`)},
+  {id:'sub',t:T(`Livraisons, abonnements, salle de sport, bibliothèque`,`Bezorgingen, abonnementen, sportschool, bibliotheek`)}]},
+ {group:T(`Les personnes qui t’ont hébergée`,`De mensen bij wie je sliep`),intro:T(`Une attestation vaut par sa précision. « Elle n’habite pas chez sa mère » ne prouve rien. « Elle a dormi chez moi du lundi au jeudi de mars à juin, sur le canapé, et laissait un sac dans le couloir » prouve quelque chose.`,`Een verklaring is zoveel waard als ze precies is. ‘Ze woont niet bij haar moeder’ bewijst niets. ‘Ze sliep van maart tot juni van maandag tot donderdag bij mij op de bank en liet een tas in de gang staan’ bewijst wel iets.`),items:[
+  {id:'host',t:T(`Une attestation datée et signée de chaque hôte`,`Een gedateerde en ondertekende verklaring van elke gastheer of gastvrouw`),d:T(`Lettre type n° 4. Uniquement des faits vrais et vécus : une fausse attestation est une infraction pour celui qui la signe.`,`Voorbeeldbrief 4. Alleen ware feiten die iemand zelf heeft meegemaakt: een valse verklaring is strafbaar voor wie tekent.`)},
+  {id:'hostp',t:T(`Ce qui recoupe leurs attestations`,`Wat hun verklaringen ondersteunt`),d:T(`Leurs propres messages, des photos, un double de clés, une participation aux courses.`,`Hun eigen berichten, foto’s, een reservesleutel, een bijdrage aan de boodschappen.`)},
+  {id:'early',t:T(`Les remettre tôt`,`Vroeg inleveren`),d:T(`Une attestation donnée au début pèse plus qu’une attestation qui arrive après une décision défavorable.`,`Een verklaring die aan het begin wordt gegeven, weegt zwaarder dan een die na een ongunstig besluit komt.`)}]},
+ {group:T(`Tes papiers`,`Je papieren`),items:[
+  {id:'brp',t:T(`Extrait du registre avec l’historique de tes adresses`,`Uittreksel BRP met adreshistorie`)},
+  {id:'mail',t:T(`Où arrive ton courrier : banque, employeur, assurance, médecin`,`Waar je post aankomt: bank, werkgever, verzekering, huisarts`)},
+  {id:'gp',t:T(`Médecin, pharmacie, dentiste : où tu es inscrite et où tu vas`,`Huisarts, apotheek, tandarts: waar je staat ingeschreven en waar je heen gaat`)},
+  {id:'rent',t:T(`Tout contrat ou paiement de logement`,`Elk contract of elke betaling voor woonruimte`),d:T(`Sous-location, participation aux frais chez un hôte.`,`Onderhuur, een bijdrage in de kosten bij een gastheer.`)}]},
+ {group:T(`Du côté de ta mère`,`Aan de kant van je moeder`),items:[
+  {id:'rep',t:T(`Copies de tout ce qu’elle a déjà déclaré sur son logement`,`Kopieën van alles wat ze al over haar woonsituatie heeft doorgegeven`)},
+  {id:'med',t:T(`Documents médicaux récents`,`Recente medische stukken`),d:T(`Sa maladie compte pour l’amende et pour la proportionnalité, et elle explique que tu passes l’aider.`,`Haar ziekte telt mee voor de boete en voor de evenredigheid, en verklaart waarom je langskomt om te helpen.`)},
+  {id:'things',t:T(`Une liste honnête de ce que tu gardes chez elle, et pourquoi`,`Een eerlijke lijst van wat je bij haar bewaart, en waarom`),d:T(`Mieux vaut l’expliquer vous-mêmes que le laisser découvrir.`,`Beter dat jullie het zelf uitleggen dan dat het wordt ontdekt.`)},
+  {id:'water',t:T(`Factures d’eau et d’énergie de la période`,`Water- en energierekeningen van de periode`),d:T(`Une consommation normale pour une personne seule est un bon point.`,`Een verbruik dat normaal is voor één persoon, is een pluspunt.`)}]},
+ {group:T(`À partir d’aujourd’hui`,`Vanaf vandaag`),items:[
+  {id:'log',t:T(`Un agenda de tes nuits, avec une trace pour chacune`,`Een agenda van je nachten, met bij elke nacht een spoor`),d:T(`Un carnet seul pèse peu. Un carnet appuyé par des messages ou des paiements pèse.`,`Een logboek alleen telt weinig. Een logboek dat door berichten of betalingen wordt gesteund, telt wel.`)}]}
+];
+const DODONT=[
+ {title:T(`Pendant l’entretien`,`Tijdens het gesprek`),
+  do:[T(`Venir accompagnée d’un avocat ou d’une personne de confiance.`,`Een advocaat of vertrouwenspersoon meenemen.`),T(`Demander au début sur quoi porte l’entretien et sur quelle période.`,`Aan het begin vragen waar het gesprek over gaat en over welke periode.`),T(`Répondre à la question posée, simplement, sans en rajouter.`,`Antwoord geven op de gestelde vraag, eenvoudig, zonder uit te weiden.`),T(`Dire « je ne sais plus » quand c’est le cas.`,`‘Dat weet ik niet meer’ zeggen als dat zo is.`),T(`Demander une pause si la fatigue ou la maladie pèse.`,`Om een pauze vragen als vermoeidheid of ziekte meespeelt.`),T(`Relire, faire corriger, garder une copie.`,`Nalezen, laten verbeteren, een kopie meenemen.`)],
+  dont:[T(`Deviner des dates ou un nombre de nuits.`,`Data of een aantal nachten gokken.`),T(`Dire oui pour en finir.`,`Ja zeggen om ervan af te zijn.`),T(`Parler à la place de l’autre : chacune répond pour elle-même.`,`Voor de ander antwoorden: ieder spreekt voor zichzelf.`),T(`Arranger les faits. Les réponses de la mère et de la fille seront comparées.`,`De feiten mooier maken. De antwoorden van moeder en dochter worden naast elkaar gelegd.`),T(`Signer sous la pression ou sans comprendre.`,`Tekenen onder druk of zonder het te begrijpen.`)]},
+ {title:T(`Pendant la visite à domicile`,`Tijdens het huisbezoek`),
+  do:[T(`Demander la carte professionnelle et le motif concret de la visite.`,`Naar de legitimatie en de concrete aanleiding van het bezoek vragen.`),T(`Demander ce qu’un refus entraînerait.`,`Vragen wat een weigering zou betekenen.`),T(`Appeler quelqu’un pour être présent, ou l’avocat.`,`Iemand bellen om erbij te zijn, of de advocaat.`),T(`Accompagner les enquêteurs dans chaque pièce.`,`Met de onderzoekers meelopen naar elke kamer.`),T(`Dire non à ce qui n’a pas de rapport : l’accord se donne étape par étape, et la visite sert à voir qui habite là, pas à tout fouiller.`,`Nee zeggen tegen wat er niets mee te maken heeft: toestemming geef je stap voor stap, en het bezoek dient om te zien wie er woont, niet om alles te doorzoeken.`),T(`Expliquer simplement à qui sont les affaires et pourquoi elles sont là.`,`Eenvoudig uitleggen van wie de spullen zijn en waarom ze er liggen.`),T(`Noter les noms, l’heure, ce qui a été ouvert et photographié.`,`Namen, tijdstip en wat er is geopend en gefotografeerd noteren.`)],
+  dont:[T(`Mettre le logement en scène avant : si un voisin ou une observation dit le contraire, plus rien de ce que vous dites n’est cru.`,`De woning vooraf ‘klaarzetten’: zegt een buur of een waarneming iets anders, dan wordt niets meer geloofd van wat jullie zeggen.`),T(`Laisser entrer sans avoir compris pourquoi.`,`Binnenlaten zonder te begrijpen waarom.`),T(`Mentir sur le propriétaire des affaires.`,`Liegen over van wie de spullen zijn.`),T(`Fermer la porte sans proposer une autre façon de prouver la situation.`,`De deur dichtdoen zonder een andere manier aan te bieden om de situatie aan te tonen.`),T(`Signer le rapport sur place sans le lire.`,`Het verslag ter plekke tekenen zonder het te lezen.`)]}
+];
+/*END:evidence*/
+/*DATA:steps*/
+const STEPS=[
+ {t:T(`La lettre d’annonce ou la demande de pièces`,`De aankondiging of het verzoek om stukken`),d:T(`Répondez dans le délai indiqué, par écrit. C’est le moment de prendre un avocat.`,`Reageer binnen de genoemde termijn, schriftelijk. Dit is het moment om een advocaat te zoeken.`)},
+ {t:T(`L’enquête`,`Het onderzoek`),d:T(`Entretien, visite, données demandées à des tiers. Elle peut durer des semaines ou des mois. S’il manque des pièces, l’aide peut être suspendue huit semaines au plus.`,`Gesprek, huisbezoek, gegevens die bij derden worden opgevraagd. Het kan weken of maanden duren. Ontbreken er stukken, dan kan de uitkering hoogstens acht weken worden opgeschort.`)},
+ {t:T(`Votre réaction avant la décision`,`Jullie reactie vóór het besluit`),d:T(`Avant une amende, vous recevez le rapport et vous pouvez donner votre version (zienswijze). Pour le remboursement, l’administration n’est pas toujours tenue de vous entendre avant.`,`Vóór een boete krijgen jullie het rapport en mogen jullie een zienswijze geven. Bij terugvordering hoeft de overheid jullie niet altijd vooraf te horen.`)},
+ {t:T(`La décision`,`Het besluit`),d:T(`Elle doit dire quoi, pour quelle période, sur quelles preuves, et comment la contester. Le remboursement et l’amende font l’objet de deux décisions.`,`Het moet vermelden wat, over welke periode, op welk bewijs, en hoe je ertegen opkomt. Terugvordering en boete zijn twee besluiten.`)},
+ {t:T(`L’objection`,`Het bezwaar`),d:T(`Six semaines, gratuite, par lettre. Vous êtes entendues à une audience. La commune répond en principe 6 à 12 semaines après la fin du délai d’objection ; l’UWV dans les 13 semaines.`,`Zes weken, gratis, per brief. Jullie worden gehoord op een hoorzitting. De gemeente beslist in principe 6 tot 12 weken na afloop van de bezwaartermijn; het UWV binnen 13 weken.`)},
+ {t:T(`Le tribunal`,`De rechtbank`),d:T(`Six semaines après la décision sur objection. Frais de greffe : 54 € au tarif réduit en 2026, remboursés si vous gagnez.`,`Zes weken na de beslissing op bezwaar. Griffierecht: € 54 tegen het lage tarief in 2026, terug te krijgen als jullie winnen.`)},
+ {t:T(`L’appel`,`Hoger beroep`),d:T(`Six semaines après le jugement, devant la Centrale Raad van Beroep. Frais de greffe : 147 € au tarif réduit en 2026.`,`Zes weken na de uitspraak, bij de Centrale Raad van Beroep. Griffierecht: € 147 tegen het lage tarief in 2026.`)},
+ {t:T(`À tout moment : l’urgence`,`Op elk moment: spoed`),d:T(`Si l’aide est coupée et qu’il n’y a plus de quoi vivre, le tribunal peut ordonner une mesure provisoire en quelques semaines, à condition qu’une objection ait été envoyée.`,`Is de uitkering gestopt en is er geen geld meer om van te leven, dan kan de rechtbank binnen enkele weken een voorlopige voorziening treffen, mits er bezwaar is gemaakt.`)}
+];
+/*END:steps*/
+/*DATA:letters*/
+const HEADER=`[Naam]
+[Adres]
+[Postcode en woonplaats]
+
+Aan: [gemeente … / UWV], afdeling [naam afdeling uit de brief]
+[Adres van de instantie]
+
+[Plaats], [datum]
+`;
+const LETTERS=[
+ {title:T(`1. Demander tout le dossier`,`1. Het hele dossier opvragen`),
+  about:T(`Signée par ta mère (c’est son aide qui est en jeu). À envoyer dès que l’enquête est connue, puis de nouveau après une décision. Envoi recommandé ou dépôt contre reçu, avec une copie gardée.`,`Ondertekend door je moeder (het gaat om haar uitkering). Versturen zodra het onderzoek bekend is, en opnieuw na een besluit. Aangetekend versturen of afgeven tegen ontvangstbewijs, en een kopie bewaren.`),
+  text:HEADER+`
+Betreft: verzoek om toezending van alle stukken
+Uw kenmerk: [kenmerk uit de brief]
+Burgerservicenummer: [BSN]
+
+Geachte heer, mevrouw,
+
+U doet onderzoek naar mijn woonsituatie. [Of: U hebt op (datum) een besluit genomen over mijn uitkering.] Om goed te kunnen reageren, verzoek ik u mij binnen twee weken een kopie te sturen van alle stukken die op mijn zaak betrekking hebben.
+
+Ik baseer dit verzoek op artikel 15 van de Algemene verordening gegevensbescherming, in de bezwaarfase ook op artikel 7:4 van de Algemene wet bestuursrecht, en bij een voorgenomen boete op artikel 5:49 van die wet.
+
+Ik vraag in elk geval om:
+1. het volledige onderzoeksrapport met alle bijlagen;
+2. de melding of het signaal dat aanleiding gaf tot het onderzoek, zo nodig geanonimiseerd;
+3. de verslagen van alle waarnemingen, met data, tijdstippen, duur en de naam of het nummer van de waarnemer;
+4. de verslagen van de gesprekken en van het huisbezoek, met de ondertekende verklaringen;
+5. de verklaringen van getuigen of buurtbewoners, zo nodig geanonimiseerd;
+6. de gegevens die u bij derden hebt opgevraagd, zoals waterverbruik, bankgegevens en gegevens uit de basisregistratie personen;
+7. de berekening per maand van het bedrag dat u wilt herzien of terugvorderen.
+
+Zolang ik deze stukken niet heb, kan ik niet volledig reageren. Ik verzoek u daarom geen besluit te nemen [of: geen hoorzitting te houden] voordat ik de stukken heb ontvangen en een redelijke termijn heb gehad om te reageren.
+
+Met vriendelijke groet,
+
+[Handtekening]
+[Naam]`},
+ {title:T(`2. Objection provisoire contre une décision`,`2. Pro-formabezwaar tegen een besluit`),
+  about:T(`Signée par ta mère. Elle sert à ne pas rater le délai de six semaines : les arguments viendront après lecture du dossier, avec l’avocat. Une lettre par décision (remboursement, amende). Joindre une copie de la décision.`,`Ondertekend door je moeder. De brief stelt de termijn van zes weken veilig: de gronden volgen na het lezen van het dossier, samen met de advocaat. Eén brief per besluit (terugvordering, boete). Voeg een kopie van het besluit bij.`),
+  text:HEADER+`
+Betreft: pro forma bezwaarschrift tegen uw besluit van [datum], kenmerk [kenmerk]
+Burgerservicenummer: [BSN]
+
+Geachte heer, mevrouw,
+
+Hierbij maak ik bezwaar tegen uw besluit van [datum], kenmerk [kenmerk], waarbij u [mijn uitkering hebt herzien / mijn uitkering hebt ingetrokken / een bedrag van € … van mij terugvordert / mij een boete hebt opgelegd]. Een kopie van het besluit is bijgevoegd.
+
+Ik ben het niet eens met dit besluit. Het berust op een onjuiste vaststelling van de feiten en is onvoldoende gemotiveerd.
+
+Dit bezwaarschrift dient om de termijn veilig te stellen. Ik verzoek u:
+1. mij een kopie te sturen van alle op de zaak betrekking hebbende stukken (artikel 7:4 Awb);
+2. mij een termijn van vier weken na ontvangst van die stukken te geven om de gronden van mijn bezwaar aan te vullen (artikel 6:6 Awb);
+3. mij uit te nodigen voor een hoorzitting (artikel 7:2 Awb);
+4. de invordering op te schorten totdat op mijn bezwaar is beslist;
+5. de kosten die ik in bezwaar maak te vergoeden als het besluit wordt herroepen (artikel 7:15 Awb).
+
+Met vriendelijke groet,
+
+[Handtekening]
+[Naam]
+
+Bijlage: kopie van het besluit`},
+ {title:T(`3. Demander une adresse postale`,`3. Een briefadres aanvragen`),
+  about:T(`Signée par toi, pour le service de l’état civil de la commune où tu séjournes. Beaucoup de communes ont un formulaire : la lettre sert alors d’accompagnement. La commune va te demander où tu dors : réponds précisément, c’est ce qui fait accepter ou refuser la demande.`,`Ondertekend door jou, voor de afdeling Burgerzaken van de gemeente waar je verblijft. Veel gemeenten hebben een formulier: de brief dient dan als begeleidend schrijven. De gemeente zal vragen waar je slaapt: antwoord precies, want daar hangt toewijzing of afwijzing van af.`),
+  text:`[Naam]
+[Geboortedatum]
+[Telefoonnummer en e-mailadres]
+
+Aan: gemeente [naam], afdeling Burgerzaken
+[Adres van de gemeente]
+
+[Plaats], [datum]
+
+Betreft: aangifte van een briefadres
+Burgerservicenummer: [BSN]
+
+Geachte heer, mevrouw,
+
+Ik heb op dit moment geen woonadres. Ik overnacht wisselend op verschillende adressen en er is geen adres waar ik naar verwachting een half jaar lang de meeste nachten zal doorbrengen. Ik verblijf wel in uw gemeente.
+
+De laatste tijd overnacht ik vooral op de volgende plekken: [eerlijk opsommen: bij wie, in welke plaats, ongeveer hoe vaak].
+
+Daarom doe ik aangifte van een briefadres, op grond van de artikelen 2.23 en 2.39 van de Wet basisregistratie personen:
+
+Briefadres: [adres]
+Briefadresgever: [naam], die hiermee schriftelijk instemt. De verklaring van toestemming is bijgevoegd.
+
+[Of, als niemand briefadresgever kan zijn: Ik heb niemand die briefadresgever kan zijn. Ik verzoek u mij ambtshalve in te schrijven op een briefadres, zo nodig op een adres van de gemeente (artikel 2.23, tweede en derde lid, Wet BRP).]
+
+Ik ben bereid mijn situatie in een gesprek toe te lichten en stukken te laten zien. Ik verzoek u zo spoedig mogelijk te beslissen en mij, als u de aangifte niet overneemt, een schriftelijk besluit te sturen waartegen ik bezwaar kan maken.
+
+Met vriendelijke groet,
+
+[Handtekening]
+[Naam]
+
+Bijlage: verklaring van toestemming van de briefadresgever`},
+ {title:T(`4. Attestation d’une personne qui t’a hébergée`,`4. Verklaring van iemand bij wie je sliep`),
+  about:T(`Signée par l’hôte, pas par toi. Elle ne contient que ce que cette personne a vu elle-même. Une fausse attestation l’expose à des poursuites et ruine le dossier : si un point n’est pas vrai, on l’enlève.`,`Ondertekend door de gastheer of gastvrouw, niet door jou. Er staat alleen in wat die persoon zelf heeft gezien. Een valse verklaring is strafbaar en maakt het dossier kapot: klopt een punt niet, dan gaat het eruit.`),
+  text:`VERKLARING
+
+Ondergetekende,
+
+Naam: [naam]
+Geboortedatum: [datum]
+Adres: [adres]
+
+verklaart naar waarheid het volgende:
+
+1. Ik ken [naam] sinds [jaar] als [zus / vriendin / kennis].
+2. In de periode van [datum] tot [datum] heeft zij bij mij overnacht: [bijvoorbeeld: gemiddeld drie nachten per week, meestal van maandag tot donderdag].
+3. Zij sliep [op de bank / in de logeerkamer]. Zij bewaarde bij mij [bijvoorbeeld: een tas met kleding en toiletspullen].
+4. Zij betaalde mij [niets / € … per maand] voor het verblijf.
+5. Voor zover ik uit eigen waarneming weet, sliep zij de overige nachten [bij … / op wisselende adressen]. [Alleen invullen wat u zelf weet.]
+6. Ter ondersteuning voeg ik toe: [berichten, foto’s of andere stukken].
+
+Ik weet dat deze verklaring kan worden gebruikt in een procedure bij de gemeente, het UWV of de rechter, en dat ik als getuige kan worden gehoord. Ik heb alleen opgeschreven wat ik zelf heb gezien en meegemaakt.
+
+[Plaats], [datum]
+
+[Handtekening]
+
+Bijlage: kopie identiteitsbewijs, met BSN en pasfoto afgeschermd`},
+ {title:T(`5. Signaler que tu avais moins de 27 ans`,`5. Melden dat je jonger dan 27 was`),
+  about:T(`Signée par ta mère. Seulement si tu avais moins de 27 ans sur toute la période. La phrase entre crochets « wat niet het geval was » ne s’écrit que si elle est vraie.`,`Ondertekend door je moeder. Alleen als je de hele periode jonger dan 27 was. De zin tussen haken ‘wat niet het geval was’ schrijf je alleen als hij waar is.`),
+  text:HEADER+`
+Betreft: onderzoek naar mijn woonsituatie, kostendelersnorm niet van toepassing
+Uw kenmerk: [kenmerk]
+Burgerservicenummer: [BSN]
+
+Geachte heer, mevrouw,
+
+U onderzoekt of mijn dochter, [naam], geboren op [geboortedatum], haar hoofdverblijf in mijn woning heeft of heeft gehad.
+
+Mijn dochter was in de hele periode waarop uw onderzoek ziet jonger dan 27 jaar. Zij wordt 27 op [datum]. Op grond van artikel 19a van de Participatiewet [bij een UWV-toeslag: artikel 2, negende lid, van de Toeslagenwet] is een persoon jonger dan 27 jaar geen kostendelende medebewoner. Ook als zij haar hoofdverblijf bij mij zou hebben gehad [wat niet het geval was], zou dat geen gevolgen hebben gehad voor de hoogte van mijn uitkering.
+
+Ik verzoek u daarom:
+1. mij schriftelijk mee te delen op welke wettelijke grondslag het onderzoek wordt voortgezet;
+2. het onderzoek te beëindigen voor zover het gaat om de toepassing van de kostendelersnorm, en mij dat schriftelijk te bevestigen.
+
+Met vriendelijke groet,
+
+[Handtekening]
+[Naam]
+
+Bijlage: kopie identiteitsbewijs van mijn dochter [of: uittreksel BRP]`}
+];
+/*END:letters*/
+/*DATA:glossary*/
+const GLOSSARY=[
+ {nl:`adresonderzoek`,d:T(`Enquête de la commune pour vérifier qui habite réellement à une adresse.`,`Onderzoek van de gemeente naar wie er echt op een adres woont.`)},
+ {nl:`benadelingsbedrag`,d:T(`Le montant versé en trop. Il sert de base au remboursement et à l’amende.`,`Het bedrag dat te veel is betaald. Het is de basis voor de terugvordering en de boete.`)},
+ {nl:`beroep`,d:T(`Recours devant le tribunal, après la décision sur objection.`,`Naar de rechtbank stappen, na de beslissing op bezwaar.`)},
+ {nl:`beslagvrije voet`,d:T(`La part du revenu qu’aucun créancier ne peut saisir, pour pouvoir vivre.`,`Het deel van het inkomen waar geen schuldeiser aan mag komen, om van te kunnen leven.`)},
+ {nl:`besluit`,d:T(`Décision écrite de l’administration. C’est elle qu’on conteste, dans les six semaines.`,`Schriftelijke beslissing van de overheid. Daartegen maak je bezwaar, binnen zes weken.`)},
+ {nl:`betalingsregeling`,d:T(`Plan de paiement d’une dette en mensualités.`,`Afspraak om een schuld in termijnen te betalen.`)},
+ {nl:`bezwaar`,d:T(`Objection : lettre à l’organisme pour qu’il revoie sa propre décision.`,`Brief aan de instantie waarin je vraagt het eigen besluit opnieuw te bekijken.`)},
+ {nl:`bijstand`,d:T(`Aide sociale versée par la commune à qui n’a pas assez pour vivre.`,`Uitkering van de gemeente voor wie niet genoeg heeft om van te leven.`)},
+ {nl:`boete`,d:T(`Amende administrative, en plus du remboursement.`,`Bestuurlijke boete, boven op de terugbetaling.`)},
+ {nl:`briefadres`,d:T(`Adresse postale officielle pour quelqu’un qui n’a pas d’adresse de résidence.`,`Officieel postadres voor iemand zonder woonadres.`)},
+ {nl:`BRP (basisregistratie personen)`,d:T(`Registre de la population tenu par les communes.`,`Het bevolkingsregister dat gemeenten bijhouden.`)},
+ {nl:`cautie`,d:T(`Avertissement qu’on n’est pas obligé de répondre aux questions.`,`De mededeling dat je niet verplicht bent te antwoorden.`)},
+ {nl:`Centrale Raad van Beroep (CRvB)`,d:T(`La plus haute juridiction pour l’aide sociale et les allocations de l’UWV.`,`De hoogste rechter voor bijstand en UWV-uitkeringen.`)},
+ {nl:`college (van burgemeester en wethouders)`,d:T(`L’exécutif de la commune. C’est lui qui décide de l’aide sociale.`,`Het dagelijks bestuur van de gemeente. Het beslist over de bijstand.`)},
+ {nl:`Dienst Toeslagen`,d:T(`Service de l’État qui verse l’aide au loyer et l’aide pour l’assurance santé.`,`De rijksdienst die huurtoeslag en zorgtoeslag uitbetaalt.`)},
+ {nl:`dringende redenen`,d:T(`Raisons impérieuses permettant de renoncer à tout ou partie d’un remboursement ou d’une amende.`,`Redenen om geheel of gedeeltelijk af te zien van terugvordering of boete.`)},
+ {nl:`gezamenlijke huishouding`,d:T(`Ménage commun de deux personnes traitées comme un couple. Impossible entre un parent et son enfant.`,`Twee mensen die als stel worden behandeld. Niet mogelijk tussen ouder en kind.`)},
+ {nl:`grove schuld`,d:T(`Faute grave, juste en dessous de l’intention. Amende de 75 %.`,`Ernstige verwijtbaarheid, net onder opzet. Boete van 75%.`)},
+ {nl:`herziening`,d:T(`Recalcul de l’aide à un niveau plus bas, pour le passé ou l’avenir.`,`Herberekening van de uitkering op een lager niveau, voor het verleden of de toekomst.`)},
+ {nl:`hoger beroep`,d:T(`Appel contre le jugement du tribunal.`,`Naar de hogere rechter stappen na de uitspraak van de rechtbank.`)},
+ {nl:`hoofdverblijf`,d:T(`Résidence principale : là où se trouve le centre de la vie d’une personne.`,`De plek waar het zwaartepunt van iemands persoonlijk leven ligt.`)},
+ {nl:`hoorzitting`,d:T(`Audience pendant l’objection, où l’on explique sa version de vive voix.`,`Bijeenkomst tijdens het bezwaar waar je je verhaal mondeling toelicht.`)},
+ {nl:`huisbezoek`,d:T(`Visite à domicile par des enquêteurs.`,`Bezoek aan huis door onderzoekers.`)},
+ {nl:`huurtoeslag`,d:T(`Aide au loyer versée par l’État.`,`Bijdrage van het Rijk in de huur.`)},
+ {nl:`inlichtingenplicht`,d:T(`Devoir de signaler de soi-même tout ce qui peut jouer sur l’aide.`,`De plicht om uit jezelf alles te melden wat van invloed kan zijn op de uitkering.`)},
+ {nl:`intrekking`,d:T(`Retrait complet de l’aide, pour le passé ou l’avenir.`,`Volledige stopzetting van de uitkering, voor het verleden of de toekomst.`)},
+ {nl:`Juridisch Loket`,d:T(`Guichet juridique gratuit, premier point de contact.`,`Gratis juridisch advies, het eerste aanspreekpunt.`)},
+ {nl:`kostendelersnorm`,d:T(`Norme d’aide plus basse quand un autre adulte de 27 ans ou plus habite dans le logement.`,`Lagere uitkeringsnorm als er een andere volwassene van 27 jaar of ouder in de woning woont.`)},
+ {nl:`mantelzorg`,d:T(`Soins donnés bénévolement à un proche malade.`,`Onbetaalde zorg voor een zieke naaste.`)},
+ {nl:`opschorting`,d:T(`Suspension provisoire du paiement, huit semaines au plus.`,`Tijdelijk stopzetten van de betaling, hoogstens acht weken.`)},
+ {nl:`opzet`,d:T(`Intention. Le niveau de faute le plus grave : amende de 100 %.`,`Het zwaarste niveau van verwijtbaarheid: boete van 100%.`)},
+ {nl:`Participatiewet`,d:T(`La loi qui règle l’aide sociale communale.`,`De wet die de bijstand regelt.`)},
+ {nl:`pro forma`,d:T(`Objection provisoire, envoyée pour respecter le délai ; les arguments suivent.`,`Voorlopig bezwaar om de termijn te halen; de gronden volgen later.`)},
+ {nl:`redelijke grond`,d:T(`Motif concret et objectif qui justifie une visite à domicile.`,`Concrete, objectieve aanleiding die een huisbezoek rechtvaardigt.`)},
+ {nl:`sociale recherche / handhaving`,d:T(`Le service qui enquête sur les soupçons de fraude aux aides.`,`De dienst die vermoedens van uitkeringsfraude onderzoekt.`)},
+ {nl:`terugvordering`,d:T(`Décision de réclamer le remboursement de ce qui a été versé en trop.`,`Besluit om terug te vragen wat te veel is betaald.`)},
+ {nl:`toevoeging`,d:T(`Aide juridique subventionnée : l’État paie l’avocat, sauf une participation.`,`Gesubsidieerde rechtsbijstand: de staat betaalt de advocaat, op een eigen bijdrage na.`)},
+ {nl:`Toeslagenwet`,d:T(`Loi qui complète une allocation de l’UWV jusqu’au minimum social.`,`Wet die een UWV-uitkering aanvult tot het sociaal minimum.`)},
+ {nl:`UWV`,d:T(`L’organisme national qui verse les allocations d’invalidité et de chômage.`,`De landelijke instantie die uitkeringen bij arbeidsongeschiktheid en werkloosheid betaalt.`)},
+ {nl:`verklaring`,d:T(`Déclaration écrite ou orale, consignée dans un compte rendu.`,`Mondelinge of schriftelijke uitleg die in een verslag wordt vastgelegd.`)},
+ {nl:`vertrokken onbekend waarheen`,d:T(`Radiation du registre : la commune ne sait plus où tu es. Beaucoup de droits se bloquent.`,`Uitschrijving uit het register: de gemeente weet niet meer waar je bent. Veel rechten vervallen.`)},
+ {nl:`verwijtbaarheid`,d:T(`Degré de faute, qui fixe le niveau de l’amende.`,`De mate waarin iemand iets te verwijten valt; bepaalt de hoogte van de boete.`)},
+ {nl:`voorlopige voorziening`,d:T(`Mesure provisoire urgente ordonnée par le tribunal.`,`Spoedmaatregel van de rechtbank.`)},
+ {nl:`waarneming`,d:T(`Observation faite par un enquêteur, en général depuis la rue.`,`Wat een onderzoeker ziet, meestal vanaf de openbare weg.`)},
+ {nl:`waarschuwing`,d:T(`Avertissement écrit à la place d’une amende.`,`Schriftelijke waarschuwing in plaats van een boete.`)},
+ {nl:`woonadres`,d:T(`Adresse de résidence au registre : là où tu dors le plus souvent.`,`Het adres in het register waar je het vaakst slaapt.`)},
+ {nl:`zienswijze`,d:T(`Ta réaction écrite ou orale avant qu’une décision soit prise.`,`Je schriftelijke of mondelinge reactie voordat een besluit wordt genomen.`)},
+ {nl:`zorgtoeslag`,d:T(`Aide de l’État pour payer l’assurance santé.`,`Bijdrage van het Rijk in de zorgverzekering.`)}
+];
+/*END:glossary*/
+/*DATA:help*/
+const HELP=[
+ {name:T(`Juridisch Loket`,`Juridisch Loket`),d:T(`<p>Premier conseil gratuit, par téléphone ou sur rendez-vous, et orientation vers un avocat. Téléphone gratuit 0800 8020 ; vérifie le numéro et les horaires sur juridischloket.nl.</p>`,`<p>Gratis eerste advies, telefonisch of op afspraak, en doorverwijzing naar een advocaat. Gratis nummer 0800 8020; controleer nummer en openingstijden op juridischloket.nl.</p>`)},
+ {name:T(`Un avocat en droit de la sécurité sociale`,`Een advocaat sociaal zekerheidsrecht`),d:T(`<p>Avec l’aide juridique subventionnée (<span class="nl">toevoeging</span>), que l’avocat demande lui-même. Plafond de revenu 2026 : 35 400 € par an pour une personne seule. Participation la plus basse : 188 €. Demandez à la commune de la prendre en charge en même temps que la demande d’avocat.</p>`,`<p>Met een toevoeging, die de advocaat zelf aanvraagt. Inkomensgrens 2026: € 35.400 per jaar voor een alleenstaande. Laagste eigen bijdrage: € 188. Vraag de gemeente tegelijk met de toevoeging om bijzondere bijstand voor die bijdrage.</p>`)},
+ {name:T(`Les conseillers sociaux de la commune`,`Sociaal raadslieden`),d:T(`<p>Aide gratuite pour comprendre une lettre, remplir un formulaire ou écrire une objection. Cherche « sociaal raadslieden » avec le nom de la commune.</p>`,`<p>Gratis hulp bij het begrijpen van een brief, het invullen van een formulier of het schrijven van een bezwaar. Zoek op ‘sociaal raadslieden’ met de naam van de gemeente.</p>`)},
+ {name:T(`Le service de l’état civil`,`Burgerzaken van de gemeente`),d:T(`<p>Pour mettre ton inscription en ordre : déménagement ou adresse postale. C’est un autre service que celui qui enquête sur l’aide, mais les informations circulent.</p>`,`<p>Om je inschrijving in orde te maken: verhuizing of briefadres. Het is een andere afdeling dan die het uitkeringsonderzoek doet, maar gegevens worden gedeeld.</p>`)},
+ {name:T(`Le médiateur`,`De ombudsman`),d:T(`<p>Pour se plaindre de la façon dont les enquêteurs se sont comportés. Il ne peut pas annuler une décision : cela passe par l’objection. Il faut d’abord déposer une plainte auprès de l’organisme lui-même.</p>`,`<p>Voor klachten over hoe onderzoekers zich hebben gedragen. Hij kan geen besluit terugdraaien: dat loopt via bezwaar. Dien eerst een klacht in bij de instantie zelf.</p>`)},
+ {name:T(`Plus d’argent pour vivre`,`Geen geld meer om van te leven`),d:T(`<p>Demandez à la commune une aide d’urgence, et à l’avocat une mesure provisoire au tribunal. Une assurance protection juridique ou un syndicat peuvent aussi payer l’avocat : vérifiez vos contrats.</p>`,`<p>Vraag de gemeente om noodhulp, en de advocaat om een voorlopige voorziening bij de rechtbank. Een rechtsbijstandverzekering of vakbond kan de advocaat ook betalen: kijk je polissen na.</p>`)}
+];
+const ecli=(id,fr,nl)=>({t:T('ECLI:NL:'+id+' : '+fr,'ECLI:NL:'+id+': '+nl),url:'https://deeplink.rechtspraak.nl/uitspraak?id=ECLI:NL:'+id});
+const SOURCES=[
+ {t:T(`Participatiewet, version du 1er juillet 2026`,`Participatiewet, versie 1 juli 2026`),url:'https://wetten.overheid.nl/BWBR0015703/2026-07-01'},
+ {t:T(`Algemene wet bestuursrecht (procédure administrative)`,`Algemene wet bestuursrecht`),url:'https://wetten.overheid.nl/BWBR0005537/2026-11-10'},
+ {t:T(`Wet basisregistratie personen (registre de la population)`,`Wet basisregistratie personen`),url:'https://wetten.overheid.nl/BWBR0033715/'},
+ {t:T(`Toeslagenwet (complément UWV)`,`Toeslagenwet`),url:'https://wetten.overheid.nl/BWBR0004043/2026-07-01'},
+ {t:T(`Awir (règles générales des allocations)`,`Algemene wet inkomensafhankelijke regelingen`),url:'https://wetten.overheid.nl/BWBR0018472/2026-10-01'},
+ {t:T(`Wet handhaving sociale zekerheid, Staatsblad 2026, 372 (pas encore en vigueur en novembre 2026)`,`Wet handhaving sociale zekerheid, Staatsblad 2026, 372 (in november 2026 nog niet in werking)`),url:'https://zoek.officielebekendmakingen.nl/stb-2026-372.html'},
+ {t:T(`Rijksoverheid : nouvelles règles de l’aide sociale 2026 et 2027`,`Rijksoverheid: nieuwe regels bijstand 2026 en 2027`),url:'https://www.rijksoverheid.nl/onderwerpen/bijstand/nieuwe-regels-bijstand-2026-en-2027'},
+ ecli('CRVB:2021:2832',`résidence principale, affaires rangées ailleurs`,`hoofdverblijf, spullen elders bewaard`),
+ ecli('CRVB:2021:3038',`on peut n’avoir de résidence principale nulle part`,`iemand kan nergens hoofdverblijf hebben`),
+ ecli('CRVB:2022:1314',`fils tournant entre des proches ; preuve à la charge de la commune`,`zoon die wisselend bij familie verbleef; bewijslast bij de gemeente`),
+ ecli('CRVB:2019:4213',`personne « hébergée » sans autre logement jugée résidente`,`‘logé’ zonder andere woonplek als bewoner aangemerkt`),
+ ecli('CRVB:2025:768',`co-habitant non déclaré : recalcul, pas retrait`,`niet-gemelde kostendeler: herziening, geen intrekking`),
+ ecli('CRVB:2007:BA2410',`visite à domicile : accord éclairé et motif raisonnable`,`huisbezoek: geïnformeerde toestemming en redelijke grond`),
+ ecli('CRVB:2024:191',`visite à domicile, conditions`,`huisbezoek, voorwaarden`),
+ ecli('CRVB:2017:2807',`surveillance systématique : preuve écartée`,`stelselmatige observatie: bewijs uitgesloten`),
+ ecli('CRVB:2022:980',`courtes observations depuis la rue admises`,`korte waarnemingen vanaf de openbare weg toegestaan`),
+ ecli('CRVB:2017:3338',`audition sans avertissement : exclue pour l’amende`,`verhoor zonder cautie: uitgesloten voor de boete`),
+ ecli('HR:2024:1135',`droit à un avocat avant un interrogatoire en vue d’une amende`,`recht op een advocaat vóór een boeteverhoor`),
+ ecli('CRVB:2021:1892',`valeur d’une déclaration signée`,`waarde van een ondertekende verklaring`),
+ ecli('CRVB:2014:3754',`niveaux de l’amende selon la faute`,`boetehoogte naar verwijtbaarheid`),
+ ecli('CRVB:2024:2192',`raisons impérieuses : pesée complète des intérêts`,`dringende redenen: volledige belangenafweging`),
+ ecli('CRVB:2026:1000',`commune restée inactive vingt mois : remboursement réduit`,`gemeente liet meldingen twintig maanden liggen: terugvordering gematigd`),
+ ecli('CRVB:2019:549',`inaction de plus de six mois après un signalement`,`langer dan zes maanden stilzitten na een signaal`),
+ ecli('CRVB:2024:932',`retard d’objection excusé pour raisons personnelles`,`termijnoverschrijding verschoonbaar wegens persoonlijke omstandigheden`),
+ ecli('RVS:2024:720',`les allocations suivent le registre de la population`,`toeslagen volgen de basisregistratie personen`)
+];
+/*END:help*/
+
+/* ---------- moteur ---------- */
+const $=s=>document.querySelector(s);
+let lang=document.documentElement.lang==='nl'?'nl':'fr';
+const tx=o=>o==null?'':typeof o==='string'?o:(o[lang]??o.fr);
+const state={a:{},cp:{},ev:{},quiz:{},flip:{},gl:'',date:''};
+const list=(arr,cls='')=>`<ul class="${cls}">${arr.map(x=>`<li>${tx(x)}</li>`).join('')}</ul>`;
+
+const visibleQs=()=>QUESTIONS.filter(q=>!q.show||q.show(state.a));
+function renderTree(){
+  let out='<ol class="stops">',done=true;
+  for(const q of visibleQs()){
+    const cur=state.a[q.id];
+    out+=`<li class="stop ${cur?'done':'here'}" id="q-${q.id}"><h3>${tx(q.q)}</h3>${q.help?`<p class="help">${tx(q.help)}</p>`:''}<div class="opts">`+
+      q.options.map(o=>`<button type="button" data-act="ans" data-k="${q.id}" data-v="${o.v}" aria-pressed="${cur===o.v}">${tx(o.label)}${o.note?`<small>${tx(o.note)}</small>`:''}</button>`).join('')+'</div></li>';
+    if(!cur){done=false;break;}
+  }
+  out+='</ol>';
+  if(!done) return out+`<p class="remaining">${tx(UI.remaining)}</p>`;
+  const a=state.a,h=HEADS.find(r=>r.when(a))||{level:'info',title:'',text:''};
+  return out+`<div class="verdict lv-${h.level}" id="verdict"><header><h3>${tx(h.title)}</h3><p>${tx(h.text)}</p></header><div>`+
+    BLOCKS.filter(r=>r.when(a)).map(r=>`<div class="blk ${r.level}"><h4>${tx(r.title)}</h4>${tx(r.body)}</div>`).join('')+
+    renderTraps(true)+`<p><button type="button" class="linkbtn" data-act="reset">${tx(UI.reset)}</button></p></div></div>`;
+}
+const renderTraps=c=>c?`<div class="blk bad"><h4>${tx(T('Ce qui te ferait perdre encore plus','Waardoor je nog meer zou verliezen'))}</h4><ul>${TRAPS.map(x=>`<li>${tx(x.t)}</li>`).join('')}</ul><p><a href="#pieges">${tx(T('Voir pourquoi, point par point','Bekijk waarom, punt voor punt'))}</a></p></div>`
+  :`<ul class="traps">${TRAPS.map(x=>`<li><b>${tx(x.t)}</b><br>${tx(x.d)}</li>`).join('')}</ul>`;
+const node=n=>n.kids?`<details><summary>${tx(n.t)}</summary>${n.kids.map(node).join('')}</details>`:
+  `<div class="leaf ${n.level||''}"><b>${tx(n.t)}</b>${n.body?`<p>${tx(n.body)}</p>`:''}</div>`;
+const renderMap=()=>`<div class="tree">${MAP.map(node).join('')}</div>`;
+function renderChecks(){
+  const flagged=[];
+  let out=CHECKS.map(g=>`<h3>${tx(g.group)}</h3>`+g.items.map(c=>{const s=state.cp[c.id]||'';
+    if(s==='no'||s==='unk') flagged.push([c,s]);
+    return `<div class="cp" data-s="${s}"><h4>${tx(c.act)}</h4><p>${tx(c.rule)}</p>${c.law?`<p class="law">${tx(c.law)}</p>`:''}
+    <div class="tri">${[['ok',UI.cpOk],['no',UI.cpNo],['unk',UI.cpUnk]].map(([v,l])=>`<button type="button" data-act="cp" data-k="${c.id}" data-v="${v}" aria-pressed="${s===v}">${tx(l)}</button>`).join('')}</div>
+    ${s==='no'||s==='unk'?`<div class="conseq"><b>${tx(UI.cpIfNo)} :</b> ${tx(c.ifNo)}</div>`:''}</div>`}).join('')).join('');
+  out+=`<div class="summary"><h4 style="margin-top:0">${tx(UI.cpSum)}</h4>`+(flagged.length?
+    `<ul>${flagged.map(([c,s])=>`<li>${tx(c.act)} <span class="tag ${s==='no'?'bad':'warn'}">${tx(s==='no'?UI.cpNo:UI.cpAsk)}</span></li>`).join('')}</ul>`:`<p>${tx(UI.cpNone)}</p>`)+'</div>';
+  return out;
+}
+function renderEvidence(){
+  const all=EVIDENCE.flatMap(g=>g.items),n=all.filter(i=>state.ev[i.id]).length;
+  return `<p><progress max="${all.length||1}" value="${n}"></progress> ${n} / ${all.length} ${tx(UI.evDone)}</p>`+
+    EVIDENCE.map(g=>`<h3>${tx(g.group)}</h3>${g.intro?`<p>${tx(g.intro)}</p>`:''}<div class="ev">`+
+      g.items.map(i=>`<label><input type="checkbox" data-ev="${i.id}" ${state.ev[i.id]?'checked':''}><span>${tx(i.t)}${i.d?`<small>${tx(i.d)}</small>`:''}</span></label>`).join('')+'</div>').join('');
+}
+const renderDoDont=()=>DODONT.map(d=>`<h3>${tx(d.title)}</h3>${d.intro?`<p>${tx(d.intro)}</p>`:''}<div class="dodont"><div><h4>${tx(T('À faire','Wel doen'))}</h4>${list(d.do)}</div><div class="dont"><h4>${tx(T('À éviter','Niet doen'))}</h4>${list(d.dont)}</div></div>`).join('');
+/* jours fériés légaux néerlandais (Algemene termijnenwet) ; les jours désignés chaque année par décret ne sont pas inclus */
+function holiday(x){ const y=x.getFullYear(),a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),
+  h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;
+  const key=t=>t.getMonth()*100+t.getDate(), off=p=>{const t=new Date(y,Math.floor(n/31)-1,n%31+1,12);t.setDate(t.getDate()+p);return key(t)};
+  return [1,327,405,1125,1126,off(-2),off(1),off(39),off(50)].includes(key(x)); }   // Nouvel An, fête du Roi, 5 mai, Noël, Vendredi saint, lundi de Pâques, Ascension, lundi de Pentecôte
+function lastDay(v){ if(!v) return ''; const d=new Date(v+'T12:00'); d.setDate(d.getDate()+42);
+  while(d.getDay()===0||d.getDay()===6||holiday(d)) d.setDate(d.getDate()+1);
+  return d.toLocaleDateString(lang==='nl'?'nl-NL':'fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
+const renderSteps=()=>`<ol class="steps">${STEPS.map(s=>`<li><b>${tx(s.t)}</b><div>${tx(s.d)}</div></li>`).join('')}</ol>
+  <div class="calc"><label for="dd"><b>${tx(UI.calcQ)}</b></label><br><input type="date" id="dd" value="${state.date}">
+  <output id="ddo">${state.date?tx(UI.calcA)+' '+lastDay(state.date):''}</output><p class="law">${tx(UI.calcNote)}</p></div>`;
+const renderLetters=()=>LETTERS.map((l,i)=>`<details class="fold"><summary>${tx(l.title)}</summary><div><p>${tx(l.about)}</p><pre id="let-${i}">${l.text}</pre><button type="button" class="btn" data-act="copy" data-k="${i}">${tx(UI.copy)}</button></div></details>`).join('');
+const glItems=()=>{const f=state.gl.toLowerCase();return GLOSSARY.filter(g=>!f||(g.nl+' '+tx(g.d)).toLowerCase().includes(f)).map(g=>`<dt class="nl">${g.nl}</dt><dd>${tx(g.d)}</dd>`).join('')};
+const renderGlossary=()=>`<input class="search" type="search" id="gls" placeholder="${tx(UI.search)}" value="${state.gl}"><dl class="gl" id="gll">${glItems()}</dl>`;
+const renderHelp=()=>`<div class="help-list">${HELP.map(h=>`<div><h4>${tx(h.name)}</h4>${tx(h.d)}</div>`).join('')}</div>`+
+  (SOURCES.length?`<h3>${tx(T('Sources','Bronnen'))}</h3><ul class="src">${SOURCES.map(s=>`<li>${s.url?`<a href="${s.url}" rel="noopener">${tx(s.t)}</a>`:tx(s.t)}</li>`).join('')}</ul>`:'');
+
+/*DATA:sections*/
+const SECTIONS=[
+  {id:'parcours',name:T('Ton parcours','Jouw route'),render:renderTree,
+   intro:T('Une dizaine de questions, une minute. À la fin : où tu te situes, comment t’expliquer, quoi faire en premier, et ce qu’il ne faut surtout pas faire. Change une réponse quand tu veux pour voir une autre branche.','Een tiental vragen, één minuut. Aan het eind: waar je staat, hoe je het uitlegt, wat je eerst doet, en wat je vooral niet moet doen. Verander een antwoord wanneer je wilt om een andere vertakking te zien.')},
+  {id:'carte',name:T('Toutes les branches','Alle vertakkingen'),render:renderMap,
+   intro:T('Toutes les possibilités d’un coup d’œil, sans répondre aux questions. Vert : favorable. Jaune : à surveiller. Rouge : défavorable. Déplie ce qui t’intéresse.','Alle mogelijkheden in één oogopslag, zonder vragen te beantwoorden. Groen: gunstig. Geel: opletten. Rood: ongunstig. Klap open wat je wilt zien.')},
+  {id:'pieges',name:T('Là où on se fait coincer','Waar het misgaat'),render:()=>renderTraps(false),
+   intro:T('Les dossiers ne se perdent pas seulement sur les faits : ils se perdent sur ces dix réflexes. Pour chacun, pourquoi il se retourne contre toi.','Zaken worden niet alleen op de feiten verloren, maar ook op deze tien reflexen. Bij elk staat waarom het zich tegen je keert.')},
+  {id:'controle',name:T('L’enquête','Het onderzoek'),render:renderChecks,
+   intro:T('L’administration aussi doit suivre des règles. Pour chaque point, indique si elle l’a respecté. Une règle violée fait tomber la preuve concernée, pas forcément tout le dossier : c’est à l’avocat d’en tirer le maximum.','Ook de overheid moet zich aan regels houden. Geef bij elk punt aan of dat is gebeurd. Een geschonden regel haalt het betrokken bewijs onderuit, niet per se het hele dossier: de advocaat moet er het maximale uit halen.')},
+  {id:'preuves',name:T('Tes preuves','Jouw bewijs'),render:()=>renderEvidence()+renderDoDont(),
+   intro:T('Des traces vraies, qui existaient déjà. Coche ce que vous avez rassemblé.','Echte sporen, die er al waren. Vink aan wat jullie hebben verzameld.')},
+  {id:'etapes',name:T('Étapes et délais','Stappen en termijnen'),render:renderSteps,
+   intro:T('La procédure dans l’ordre, et le délai qu’il ne faut jamais rater.','De procedure op volgorde, en de termijn die je nooit mag missen.')},
+  {id:'lettres',name:T('Lettres types','Voorbeeldbrieven'),render:renderLetters,
+   intro:T('Cinq modèles en néerlandais. Remplace tout ce qui est entre crochets, et n’écris que ce qui est vrai. Fais-les relire par l’avocat si tu en as un.','Vijf voorbeelden. Vervang alles tussen vierkante haken en schrijf alleen op wat waar is. Laat ze nalezen door de advocaat als je die hebt.')},
+  {id:'lexique',only:'fr',name:T('Lexique','Woordenlijst'),render:renderGlossary},
+  {id:'aide',name:T('Où trouver de l’aide','Waar vind je hulp'),render:renderHelp,
+   intro:T('Un avocat spécialisé connaît les juges, la commune et les délais. Commence par là.','Een gespecialiseerde advocaat kent de rechters, de gemeente en de termijnen. Begin daar.')}
+];
+/*END:sections*/
+
+const draw=id=>{$('#b-'+id).innerHTML=SECTIONS.find(s=>s.id===id).render()};
+function renderAll(){
+  document.documentElement.lang=lang; document.title=tx(UI.title);
+  $('#brand').textContent=tx(UI.brand);
+  document.querySelectorAll('#lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===lang));
+  const secs=SECTIONS.filter(s=>!s.only||s.only===lang);   // le lexique néerlandais-français ne sert qu'au lecteur français
+  $('#nav').innerHTML=secs.map(s=>`<a href="#${s.id}">${tx(s.name)}</a>`).join('');
+  $('#hero').innerHTML=`<h1>${tx(UI.title)}</h1><p class="sub">${tx(UI.sub)}</p><div class="notes"><p>${tx(UI.n1)}</p><p>${tx(UI.n2)}</p><p>${tx(UI.n3)}</p></div>`;
+  $('main').innerHTML=secs.map(s=>`<section id="${s.id}"><h2>${tx(s.name)}</h2>${s.intro?`<p class="lead">${tx(s.intro)}</p>`:''}<div class="body" id="b-${s.id}"></div></section>`).join('');
+  secs.forEach(s=>draw(s.id));
+  $('#foot').textContent=tx(UI.foot);
+  spy();
+}
+const ACT={
+  lang:k=>{lang=k;renderAll()},
+  ans:(k,v)=>{state.a[k]=v;draw('parcours');
+    const next=visibleQs().find(q=>!state.a[q.id]);
+    (next?$('#q-'+next.id):$('#verdict'))?.scrollIntoView({block:'center'})},
+  reset:()=>{state.a={};draw('parcours');$('#parcours').scrollIntoView()},
+  cp:(k,v)=>{state.cp[k]=state.cp[k]===v?'':v;draw('controle')},
+  copy:(k,v,b)=>{const t=$('#let-'+k).textContent;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const r=document.createRange();r.selectNodeContents($('#let-'+k));const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy')})
+      .finally(()=>{b.textContent=tx(UI.copied)})}
+};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)ACT[b.dataset.act](b.dataset.k,b.dataset.v,b)});
+document.addEventListener('change',e=>{
+  if(e.target.dataset.ev){state.ev[e.target.dataset.ev]=e.target.checked;draw('preuves')}
+  if(e.target.id==='dd'){state.date=e.target.value;$('#ddo').textContent=state.date?tx(UI.calcA)+' '+lastDay(state.date):''}
+});
+document.addEventListener('input',e=>{if(e.target.id==='gls'){state.gl=e.target.value;$('#gll').innerHTML=glItems()}});
+addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));
+let io;
+function spy(){ io?.disconnect();
+  io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)document.querySelectorAll('#nav a').forEach(a=>{const on=a.getAttribute('href')==='#'+e.target.id;a.classList.toggle('here',on);if(on){const n=$('#nav');n.scrollLeft=a.offsetLeft-n.offsetLeft-(n.clientWidth-a.offsetWidth)/2}})}),{rootMargin:'-30% 0px -60% 0px'});
+  document.querySelectorAll('main>section').forEach(s=>io.observe(s)); }
+renderAll();
+document.getElementById('nojs').remove();   // le message ne reste visible que si ce script n'a pas tourné
+</script>
+</body>
+</html>
